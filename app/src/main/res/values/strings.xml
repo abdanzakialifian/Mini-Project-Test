@@ -9,4 +9,5 @@
     <string name="enter_password">Masukkan Password</string>
     <string name="hint_error_password">Password cannot be less than 8</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="signup_to_get_started">Signup to get started</string>
 </resources>

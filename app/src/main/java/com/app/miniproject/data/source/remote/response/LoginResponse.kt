@@ -2,10 +2,10 @@ package com.app.miniproject.data.source.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class RegistrationResponse(
+data class LoginResponse(
 
 	@field:SerializedName("data")
-	val data: RegistrationDataResponse? = null,
+	val data: LoginDataResponse? = null,
 
 	@field:SerializedName("message")
 	val message: String? = null,
@@ -14,7 +14,7 @@ data class RegistrationResponse(
 	val status: String? = null
 )
 
-data class RegistrationDataResponse(
+data class LoginDataResponse(
 
 	@field:SerializedName("profileName")
 	val profileName: String? = null,
@@ -23,5 +23,8 @@ data class RegistrationDataResponse(
 	val id: Int? = null,
 
 	@field:SerializedName("username")
-	val username: String? = null
+	val username: String? = null,
+
+	@field:SerializedName("token")
+	val token: String? = null
 )

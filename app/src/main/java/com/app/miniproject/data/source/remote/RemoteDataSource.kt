@@ -1,5 +1,6 @@
 package com.app.miniproject.data.source.remote
 
+import com.app.miniproject.data.source.remote.response.LoginResponse
 import com.app.miniproject.data.source.remote.response.RegistrationResponse
 import com.app.miniproject.data.source.remote.services.ApiService
 import com.app.miniproject.utils.UiState
@@ -14,6 +15,17 @@ class RemoteDataSource @Inject constructor(private val apiService: ApiService) {
     fun postRegistration(requestBody: RequestBody): Flow<UiState<RegistrationResponse>> = flow {
         emit(UiState.Loading)
         val response = apiService.postRegistration(requestBody)
+        val responseBody = response.body()
+        if (response.isSuccessful && responseBody != null) {
+            emit(UiState.Success(responseBody))
+        } else {
+            emit(UiState.Error(responseBody?.message.toString()))
+        }
+    }
+
+    fun postLogin(requestBody: RequestBody): Flow<UiState<LoginResponse>> = flow {
+        emit(UiState.Loading)
+        val response = apiService.postLogin(requestBody)
         val responseBody = response.body()
         if (response.isSuccessful && responseBody != null) {
             emit(UiState.Success(responseBody))

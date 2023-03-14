@@ -1,5 +1,6 @@
 package com.app.miniproject.data.source.remote.services
 
+import com.app.miniproject.data.source.remote.response.LoginResponse
 import com.app.miniproject.data.source.remote.response.RegistrationResponse
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -11,11 +12,10 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface ApiService {
-    @FormUrlEncoded
     @POST("auth/login")
-    fun postLogin(
+    suspend fun postLogin(
         @Body requestBody: RequestBody
-    )
+    ): Response<LoginResponse>
 
     @POST("auth/register")
     suspend fun postRegistration(

@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Mini Project</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="enter_name">Masukkan Nama</string>
+    <string name="enter_username">Masukkan Username</string>
+    <string name="enter_password">Masukkan Password</string>
+    <string name="hint_error_password">Password cannot be less than 8</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>

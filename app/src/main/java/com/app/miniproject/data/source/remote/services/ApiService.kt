@@ -1,8 +1,9 @@
 package com.app.miniproject.data.source.remote.services
 
+import com.app.miniproject.data.source.remote.response.RegistrationResponse
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -16,11 +17,10 @@ interface ApiService {
         @Body requestBody: RequestBody
     )
 
-    @FormUrlEncoded
-    @POST("auth/registerasi")
-    fun postRegistration(
+    @POST("auth/register")
+    suspend fun postRegistration(
         @Body requestBody: RequestBody
-    )
+    ): Response<RegistrationResponse>
 
     @GET("barang/find-all")
     fun getItemsList(

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.app.miniproject.R
 import com.app.miniproject.databinding.FragmentLoginBinding
 import com.app.miniproject.presentation.base.BaseVBFragment
@@ -35,8 +36,15 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         handleTextInputPassword()
-        binding.btnSignIn.setOnClickListener {
-            callApi()
+        binding.apply {
+            btnSignIn.setOnClickListener {
+                callApi()
+            }
+            tvSignUp.setOnClickListener {
+                val navigateToRegistrationFragment =
+                    LoginFragmentDirections.actionLoginFragmentToRegistrationFragment()
+                findNavController().navigate(navigateToRegistrationFragment)
+            }
         }
     }
 
@@ -55,19 +63,13 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
                 .collect { uiState ->
                     when (uiState) {
                         is UiState.Loading -> Toast.makeText(
-                            requireContext(),
-                            "Loading",
-                            Toast.LENGTH_SHORT
+                            requireContext(), "Loading", Toast.LENGTH_SHORT
                         ).show()
                         is UiState.Success -> Toast.makeText(
-                            requireContext(),
-                            "Berhasil : ${uiState.data}",
-                            Toast.LENGTH_SHORT
+                            requireContext(), "Berhasil : ${uiState.data}", Toast.LENGTH_SHORT
                         ).show()
                         is UiState.Error -> Toast.makeText(
-                            requireContext(),
-                            "ERROR",
-                            Toast.LENGTH_SHORT
+                            requireContext(), "ERROR", Toast.LENGTH_SHORT
                         ).show()
                     }
                 }

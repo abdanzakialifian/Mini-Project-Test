@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.app.miniproject.R
 import com.app.miniproject.databinding.FragmentRegistrationBinding
 import com.app.miniproject.presentation.base.BaseVBFragment
@@ -34,8 +35,16 @@ class RegistrationFragment : BaseVBFragment<FragmentRegistrationBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         handleTextInputPassword()
-        binding.btnSignUp.setOnClickListener {
-            callApi()
+        binding.apply {
+            btnSignUp.setOnClickListener {
+                callApi()
+            }
+            imgBack.setOnClickListener {
+                findNavController().navigateUp()
+            }
+            tvSignIn.setOnClickListener {
+                findNavController().navigateUp()
+            }
         }
     }
 

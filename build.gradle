@@ -8,6 +8,7 @@ buildscript {
         kotlin_flow_android_version = '1.6.4'
         glide_version = '4.15.0'
         navigation_version = '2.5.3'
+        lottie_version = '3.5.0'
     }
 }
 plugins {

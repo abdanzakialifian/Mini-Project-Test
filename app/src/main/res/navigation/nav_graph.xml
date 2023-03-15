@@ -14,18 +14,22 @@
         android:id="@+id/loginFragment"
         android:name="com.app.miniproject.presentation.login.view.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/splashScreenFragment"
         android:name="com.app.miniproject.presentation.splashscreen.SplashScreenFragment"
         android:label="fragment_splash_screen"
-        app:launchSingleTop="true"
-        app:popUpTo="@id/splashScreenFragment"
-        app:popUpToInclusive="true"
-        tools:layout="@layout/fragment_splash_screen" >
+        tools:layout="@layout/fragment_splash_screen">
         <action
             android:id="@+id/action_splashScreenFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/splashScreenFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>

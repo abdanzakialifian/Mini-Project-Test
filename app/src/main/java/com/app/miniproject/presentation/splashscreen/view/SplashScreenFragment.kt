@@ -39,7 +39,7 @@ class SplashScreenFragment : BaseVBFragment<FragmentSplashScreenBinding>() {
                     .collect { isLogin ->
                         if (isLogin) {
                             val actionToHomeFragment =
-                                SplashScreenFragmentDirections.actionSplashScreenFragmentToHomeFragment()
+                                SplashScreenFragmentDirections.actionSplashScreenFragmentToContainerFragment()
                             findNavController().navigate(actionToHomeFragment)
                         } else {
                             val actionToLoginFragment =

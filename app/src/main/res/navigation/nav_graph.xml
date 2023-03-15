@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashScreenFragment">
+    app:startDestination="@id/containerFragment">
 
     <fragment
         android:id="@+id/registrationFragment"
@@ -19,8 +19,8 @@
             android:id="@+id/action_loginFragment_to_registrationFragment"
             app:destination="@id/registrationFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            android:id="@+id/action_loginFragment_to_containerFragment"
+            app:destination="@id/containerFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashScreenFragment"
@@ -34,16 +34,13 @@
             app:popUpTo="@+id/splashScreenFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_splashScreenFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/splashScreenFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_splashScreenFragment_to_containerFragment"
+            app:destination="@id/containerFragment" />
     </fragment>
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.app.miniproject.presentation.home.view.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/containerFragment"
+        android:name="com.app.miniproject.presentation.container.ContainerFragment"
+        android:label="fragment_container"
+        tools:layout="@layout/fragment_container" />
 
 </navigation>

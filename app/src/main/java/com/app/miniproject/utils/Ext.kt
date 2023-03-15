@@ -10,6 +10,8 @@ import android.widget.TextView
 import com.app.miniproject.R
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
+import java.text.NumberFormat
+import java.util.*
 
 fun View.visible() {
     this.visibility = View.VISIBLE
@@ -80,4 +82,10 @@ fun View.showSnackBar(layoutInflater: LayoutInflater, content: String) {
     tvContent.text = content
     snackBarLayout.addView(customSnackBarView, 0)
     snackBar.show()
+}
+
+fun Int.formatRupiah(): String {
+    val localeID = Locale("in", "ID")
+    val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
+    return formatRupiah.format(this)
 }

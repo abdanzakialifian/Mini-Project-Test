@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.app.miniproject.databinding.ItemListBinding
 import com.app.miniproject.domain.model.DataItem
 import com.app.miniproject.utils.collapse
 import com.app.miniproject.utils.expand
+import com.app.miniproject.utils.formatRupiah
 import javax.inject.Inject
 
 class HomeAdapter @Inject constructor() :
@@ -22,7 +22,7 @@ class HomeAdapter @Inject constructor() :
         fun bind(item: DataItem?) {
             binding.apply {
                 tvTitleItem.text = item?.namaBarang
-                tvPrice.text = item?.harga.toString()
+                tvPrice.text = item?.harga?.formatRupiah()
                 tvStock.text = item?.stok.toString()
                 tvSupplierName.text = item?.supplier?.namaSupplier
                 tvPhoneNumber.text = item?.supplier?.noTelp

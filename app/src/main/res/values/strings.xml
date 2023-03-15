@@ -18,4 +18,6 @@
     <string name="supplier_name">Supplier Name</string>
     <string name="stock">Stock</string>
     <string name="price">Price</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
 </resources>

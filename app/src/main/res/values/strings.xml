@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Mini Project</string>
+    <string name="app_name">Shop</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_up">Sign up</string>
     <string name="sign_in">Sign in</string>
-    <string name="enter_name">Masukkan Nama</string>
-    <string name="enter_username">Masukkan Username</string>
-    <string name="enter_password">Masukkan Password</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="enter_password">Enter Password</string>
     <string name="hint_error_password">Password cannot be less than 8</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="signup_to_get_started">Signup to get started</string>
@@ -24,4 +24,9 @@
     <string name="cancel">Cancel</string>
     <string name="title_alert_dialog_information">Are you sure?</string>
     <string name="sub_title_alert_dialog_information">Click OK if you are sure you want to delete data %s.</string>
+    <string name="enter_item_name">Enter Item Name</string>
+    <string name="enter_stock">Enter Stock</string>
+    <string name="enter_price">Enter Price</string>
+    <string name="create">Create</string>
+    <string name="choose_supplier">Choose Supplier</string>
 </resources>

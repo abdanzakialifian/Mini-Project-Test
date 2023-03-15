@@ -2,6 +2,7 @@ package com.app.miniproject.presentation.home.view
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -10,8 +11,10 @@ import androidx.paging.LoadState
 import com.app.miniproject.R
 import com.app.miniproject.databinding.FragmentHomeBinding
 import com.app.miniproject.domain.model.DataItem
+import com.app.miniproject.domain.model.Supplier
 import com.app.miniproject.presentation.base.BaseVBFragment
 import com.app.miniproject.presentation.home.adapter.HomeAdapter
+import com.app.miniproject.presentation.home.adapter.SupplierDropDownAdapter
 import com.app.miniproject.presentation.home.viewmodel.HomeViewModel
 import com.app.miniproject.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +27,12 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
     @Inject
     lateinit var homeAdapter: HomeAdapter
 
+    @Inject
+    lateinit var supplierDropDownAdapter: SupplierDropDownAdapter
+
     private val viewModel by viewModels<HomeViewModel>()
+
+    private var isExpanded = false
 
     override fun getViewBinding(): FragmentHomeBinding = FragmentHomeBinding.inflate(layoutInflater)
 
@@ -33,6 +41,16 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
 
         callApi()
         setButtonClicked()
+        binding.autoCompleteTextView.setOnClickListener {
+            if (!isExpanded) {
+                isExpanded = true
+                binding.cvDropDownContent.visible()
+                callApiSupplier()
+            } else {
+                isExpanded = false
+                binding.cvDropDownContent.gone()
+            }
+        }
     }
 
     private fun callApi() {
@@ -81,6 +99,49 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         }
     }
 
+    private fun callApiSupplier() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.getUserToken.collect { token ->
+                        viewModel.setToken("Bearer $token")
+                    }
+                }
+                launch {
+                    viewModel.getSupplierList.collect { pagingData ->
+                        supplierDropDownAdapter.submitData(pagingData)
+                        binding.rvSupplier.adapter = supplierDropDownAdapter
+
+                        supplierDropDownAdapter.addLoadStateListener { loadState ->
+                            when (val state = loadState.refresh) {
+                                is LoadState.Loading -> {
+//                                    binding.apply {
+//                                        shimmerAnimation.visible()
+//                                        shimmerAnimation.startShimmer()
+//                                        rvSupplier.gone()
+//                                    }
+                                }
+                                is LoadState.NotLoading -> {
+
+                                }
+                                is LoadState.Error -> {
+//                                    binding.apply {
+//                                        shimmerAnimation.gone()
+//                                        shimmerAnimation.stopShimmer()
+//                                        rvSupplier.gone()
+//                                    }
+                                    view?.showSnackBar(
+                                        layoutInflater, state.error.message.toString()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun setButtonClicked() {
         homeAdapter.setOnButtonClickCallback(object : HomeAdapter.OnButtonClickCallback {
             override fun onDeleteClicked(item: DataItem?) {
@@ -88,6 +149,10 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
             }
 
             override fun onUpdateClicked(item: DataItem?) {}
+        })
+
+        supplierDropDownAdapter.setOnItemClickCallback(object : SupplierDropDownAdapter.OnItemClickCallback {
+            override fun onItemClicked(item: Supplier?) {}
         })
     }
 

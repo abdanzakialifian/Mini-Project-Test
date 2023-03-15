@@ -46,4 +46,13 @@ class HomeViewModel @Inject constructor(private val shopUseCase: ShopUseCase) : 
             )
         }
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val getSupplierList = authorization.flatMapLatest { authorization ->
+        shopUseCase.getSupplierList(authorization).stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = PagingData.empty()
+        )
+    }
 }

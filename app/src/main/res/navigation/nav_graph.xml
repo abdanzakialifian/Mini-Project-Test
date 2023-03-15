@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/splashScreenFragment">
 
     <fragment
         android:id="@+id/registrationFragment"
@@ -15,5 +15,17 @@
         android:name="com.app.miniproject.presentation.login.view.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/splashScreenFragment"
+        android:name="com.app.miniproject.presentation.splashscreen.SplashScreenFragment"
+        android:label="fragment_splash_screen"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/splashScreenFragment"
+        app:popUpToInclusive="true"
+        tools:layout="@layout/fragment_splash_screen" >
+        <action
+            android:id="@+id/action_splashScreenFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 
 </navigation>

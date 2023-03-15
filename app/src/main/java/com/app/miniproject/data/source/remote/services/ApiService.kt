@@ -1,9 +1,6 @@
 package com.app.miniproject.data.source.remote.services
 
-import com.app.miniproject.data.source.remote.response.DataItemResponse
-import com.app.miniproject.data.source.remote.response.ItemResponse
-import com.app.miniproject.data.source.remote.response.LoginResponse
-import com.app.miniproject.data.source.remote.response.RegistrationResponse
+import com.app.miniproject.data.source.remote.response.*
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -36,7 +33,7 @@ interface ApiService {
         @Query("offset") offsite: Int,
         @Query("limit") limit: Int,
         @Header("Authorization") authorization: String
-    )
+    ): SupplierDataResponse
 
     @FormUrlEncoded
     @POST("barang/create")

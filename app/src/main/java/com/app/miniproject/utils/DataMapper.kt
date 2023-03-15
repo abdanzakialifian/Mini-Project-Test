@@ -1,9 +1,9 @@
 package com.app.miniproject.utils
 
 import com.app.miniproject.data.source.remote.response.DataItemResponse
-import com.app.miniproject.data.source.remote.response.ItemResponse
 import com.app.miniproject.data.source.remote.response.LoginResponse
 import com.app.miniproject.data.source.remote.response.RegistrationResponse
+import com.app.miniproject.data.source.remote.response.SupplierResponse
 import com.app.miniproject.domain.model.*
 
 fun RegistrationResponse.toRegistration(): Registration {
@@ -30,29 +30,24 @@ fun LoginResponse.toLogin(): Login {
 }
 
 fun DataItemResponse.toDataItem(): DataItem {
-//    val listData = this.data?.map {
-        val supplier = Supplier(
-            namaSupplier = this.supplier?.namaSupplier,
-            id = this.supplier?.id,
-            noTelp = this.supplier?.noTelp,
-            alamat = this.supplier?.alamat
-        )
-        return DataItem(
-            harga = this.harga,
-            supplier = supplier,
-            id = this.id,
-            namaBarang = this.namaBarang,
-            stok = this.stok
-        )
-//    }
-
-//    return Item(
-//        data = listData,
-//        limit = this.limit,
-//        totalPage = this.totalPage,
-//        page = this.page,
-//        message = this.message,
-//        status = this.status,
-//        totalRecord = this.totalRecord
-//    )
+    val supplier = Supplier(
+        namaSupplier = this.supplier?.namaSupplier,
+        id = this.supplier?.id,
+        noTelp = this.supplier?.noTelp,
+        alamat = this.supplier?.alamat
+    )
+    return DataItem(
+        harga = this.harga,
+        supplier = supplier,
+        id = this.id,
+        namaBarang = this.namaBarang,
+        stok = this.stok
+    )
 }
+
+fun SupplierResponse.toSupplier(): Supplier = Supplier(
+    namaSupplier = this.namaSupplier,
+    id = this.id,
+    noTelp = this.noTelp,
+    alamat = this.alamat
+)

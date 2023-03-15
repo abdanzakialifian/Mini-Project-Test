@@ -4,9 +4,9 @@ import androidx.paging.PagingData
 import com.app.miniproject.domain.interfaces.ShopRepository
 import com.app.miniproject.domain.interfaces.ShopUseCase
 import com.app.miniproject.domain.model.DataItem
-import com.app.miniproject.domain.model.Item
 import com.app.miniproject.domain.model.Login
 import com.app.miniproject.domain.model.Registration
+import com.app.miniproject.domain.model.Supplier
 import com.app.miniproject.utils.UiState
 import kotlinx.coroutines.flow.Flow
 import okhttp3.RequestBody
@@ -27,11 +27,16 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
     }
 
     override fun getUserSession(): Flow<Boolean> = shopRepository.getUserSession()
+
     override suspend fun saveUserToken(token: String) {
         shopRepository.saveUserToken(token)
     }
 
     override fun getUserToken(): Flow<String> = shopRepository.getUserToken()
+
     override fun getItemsList(authorization: String): Flow<PagingData<DataItem>> =
         shopRepository.getItemsList(authorization)
+
+    override fun getSupplierList(authorization: String): Flow<PagingData<Supplier>> =
+        shopRepository.getSupplierList(authorization)
 }

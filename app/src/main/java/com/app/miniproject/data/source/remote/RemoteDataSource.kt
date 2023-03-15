@@ -4,10 +4,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.app.miniproject.data.source.remote.paging.ItemPagingSource
+import com.app.miniproject.data.source.remote.paging.SupplierPagingSource
 import com.app.miniproject.data.source.remote.response.DataItemResponse
-import com.app.miniproject.data.source.remote.response.ItemResponse
 import com.app.miniproject.data.source.remote.response.LoginResponse
 import com.app.miniproject.data.source.remote.response.RegistrationResponse
+import com.app.miniproject.data.source.remote.response.SupplierResponse
 import com.app.miniproject.data.source.remote.services.ApiService
 import com.app.miniproject.utils.UiState
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,8 @@ import javax.inject.Singleton
 @Singleton
 class RemoteDataSource @Inject constructor(
     private val apiService: ApiService,
-    private val itemPagingSource: ItemPagingSource
+    private val itemPagingSource: ItemPagingSource,
+    private val supplierPagingSource: SupplierPagingSource
 ) {
     fun postRegistration(requestBody: RequestBody): Flow<UiState<RegistrationResponse>> = flow {
         emit(UiState.Loading)
@@ -50,6 +52,18 @@ class RemoteDataSource @Inject constructor(
         ),
         pagingSourceFactory = {
             itemPagingSource.apply {
+                setToken(authorization)
+            }
+        }
+    ).flow
+
+    fun getSupplierList(authorization: String): Flow<PagingData<SupplierResponse>> = Pager(
+        config = PagingConfig(
+            pageSize = 10,
+            initialLoadSize = 10
+        ),
+        pagingSourceFactory = {
+            supplierPagingSource.apply {
                 setToken(authorization)
             }
         }

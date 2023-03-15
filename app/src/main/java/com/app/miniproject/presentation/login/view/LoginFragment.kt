@@ -16,6 +16,7 @@ import com.app.miniproject.presentation.base.BaseVBFragment
 import com.app.miniproject.presentation.login.viewmodel.LoginViewModel
 import com.app.miniproject.utils.UiState
 import com.app.miniproject.utils.gone
+import com.app.miniproject.utils.showSnackBar
 import com.app.miniproject.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -62,19 +63,19 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect { uiState ->
                     when (uiState) {
-                        is UiState.Loading -> Toast.makeText(
-                            requireContext(), "Loading", Toast.LENGTH_SHORT
-                        ).show()
+                        is UiState.Loading -> binding.progressBar.visible()
                         is UiState.Success -> {
+                            binding.progressBar.gone()
                             viewModel.saveUserSession(true)
                             viewModel.saveUserToken(uiState.data.data?.token ?: "")
                             val actionToContainerFragment =
                                 LoginFragmentDirections.actionLoginFragmentToContainerFragment()
                             findNavController().navigate(actionToContainerFragment)
                         }
-                        is UiState.Error -> Toast.makeText(
-                            requireContext(), "ERROR", Toast.LENGTH_SHORT
-                        ).show()
+                        is UiState.Error -> {
+                            binding.progressBar.gone()
+                            view?.showSnackBar(layoutInflater, uiState.message)
+                        }
                     }
                 }
         }

@@ -6,13 +6,66 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.supplier.view.SupplierFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Supplier Fragment"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_animation"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_supplier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_list_supplier" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

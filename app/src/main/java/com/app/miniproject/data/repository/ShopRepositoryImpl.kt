@@ -6,9 +6,9 @@ import com.app.miniproject.data.source.local.LocalDataSource
 import com.app.miniproject.data.source.remote.RemoteDataSource
 import com.app.miniproject.domain.interfaces.ShopRepository
 import com.app.miniproject.domain.model.DataItem
-import com.app.miniproject.domain.model.Item
 import com.app.miniproject.domain.model.Login
 import com.app.miniproject.domain.model.Registration
+import com.app.miniproject.domain.model.Supplier
 import com.app.miniproject.utils.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -49,17 +49,18 @@ class ShopRepositoryImpl @Inject constructor(
     }
 
     override fun getUserToken(): Flow<String> = localDataSource.getUserToken()
+
     override fun getItemsList(authorization: String): Flow<PagingData<DataItem>> =
         remoteDataSource.getItemsList(authorization).map { pagingData ->
             pagingData.map { map ->
                 map.toDataItem()
             }
         }
-//        remoteDataSource.getItemsList(offsite, limit, authorization).map { uiState ->
-//            when (uiState) {
-//                is UiState.Loading -> UiState.Loading
-//                is UiState.Success -> UiState.Success(uiState.data.toItem())
-//                is UiState.Error -> UiState.Error(uiState.message)
-//            }
-//        }
+
+    override fun getSupplierList(authorization: String): Flow<PagingData<Supplier>> =
+        remoteDataSource.getSupplierList(authorization).map { pagingData ->
+            pagingData.map { map ->
+                map.toSupplier()
+            }
+        }
 }

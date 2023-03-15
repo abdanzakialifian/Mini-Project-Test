@@ -1,5 +1,6 @@
 package com.app.miniproject.data.repository
 
+import com.app.miniproject.data.source.local.LocalDataSource
 import com.app.miniproject.data.source.remote.RemoteDataSource
 import com.app.miniproject.domain.interfaces.ShopRepository
 import com.app.miniproject.domain.model.Login
@@ -12,7 +13,10 @@ import kotlinx.coroutines.flow.map
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-class ShopRepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDataSource) :
+class ShopRepositoryImpl @Inject constructor(
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource
+) :
     ShopRepository {
     override fun postRegistration(requestBody: RequestBody): Flow<UiState<Registration>> =
         remoteDataSource.postRegistration(requestBody).map { uiState ->
@@ -31,4 +35,10 @@ class ShopRepositoryImpl @Inject constructor(private val remoteDataSource: Remot
                 is UiState.Error -> UiState.Error(uiState.message)
             }
         }
+
+    override suspend fun saveUserSession(isLogin: Boolean) {
+        localDataSource.saveUserSession(isLogin)
+    }
+
+    override fun getUserSession(): Flow<Boolean> = localDataSource.getUserSession()
 }

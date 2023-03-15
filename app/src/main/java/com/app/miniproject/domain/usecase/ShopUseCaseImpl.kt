@@ -18,4 +18,10 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
 
     override fun postLogin(requestBody: RequestBody): Flow<UiState<Login>> =
         shopRepository.postLogin(requestBody)
+
+    override suspend fun saveUserSession(isLogin: Boolean) {
+        shopRepository.saveUserSession(isLogin)
+    }
+
+    override fun getUserSession(): Flow<Boolean> = shopRepository.getUserSession()
 }

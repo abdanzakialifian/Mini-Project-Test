@@ -65,9 +65,12 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
                         is UiState.Loading -> Toast.makeText(
                             requireContext(), "Loading", Toast.LENGTH_SHORT
                         ).show()
-                        is UiState.Success -> Toast.makeText(
-                            requireContext(), "Berhasil : ${uiState.data}", Toast.LENGTH_SHORT
-                        ).show()
+                        is UiState.Success -> {
+                            Toast.makeText(
+                                requireContext(), "Berhasil : ${uiState.data}", Toast.LENGTH_SHORT
+                            ).show()
+                            viewModel.saveUserSession(true)
+                        }
                         is UiState.Error -> Toast.makeText(
                             requireContext(), "ERROR", Toast.LENGTH_SHORT
                         ).show()

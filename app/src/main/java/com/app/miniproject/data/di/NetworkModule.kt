@@ -29,6 +29,7 @@ object NetworkModule {
                     // add query parameter key every request
                     val original = chain.request()
                     val originalHttpUrl = original.url
+                    // set API_KEY in local.properties
                     val apiKey = BuildConfig.API_KEY
                     val url = originalHttpUrl.newBuilder()
                         .addQueryParameter("Authorization", apiKey)
@@ -48,9 +49,11 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideApiService(okHttpClient: OkHttpClient): ApiService {
-        val retrofit =
-            Retrofit.Builder().baseUrl("http://159.223.57.121:8090/").client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create()).build()
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://159.223.57.121:8090/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
         return retrofit.create(ApiService::class.java)
     }
 }

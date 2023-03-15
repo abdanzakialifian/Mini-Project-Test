@@ -9,4 +9,6 @@ import okhttp3.RequestBody
 interface ShopUseCase {
     fun postRegistration(requestBody: RequestBody): Flow<UiState<Registration>>
     fun postLogin(requestBody: RequestBody): Flow<UiState<Login>>
+    suspend fun saveUserSession(isLogin: Boolean)
+    fun getUserSession(): Flow<Boolean>
 }

@@ -3,10 +3,7 @@ package com.app.miniproject.domain.usecase
 import androidx.paging.PagingData
 import com.app.miniproject.domain.interfaces.ShopRepository
 import com.app.miniproject.domain.interfaces.ShopUseCase
-import com.app.miniproject.domain.model.DataItem
-import com.app.miniproject.domain.model.Login
-import com.app.miniproject.domain.model.Registration
-import com.app.miniproject.domain.model.Supplier
+import com.app.miniproject.domain.model.*
 import com.app.miniproject.utils.UiState
 import kotlinx.coroutines.flow.Flow
 import okhttp3.RequestBody
@@ -39,4 +36,10 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
 
     override fun getSupplierList(authorization: String): Flow<PagingData<Supplier>> =
         shopRepository.getSupplierList(authorization)
+
+    override fun deleteItem(id: Int, authorization: String): Flow<UiState<Delete>> =
+        shopRepository.deleteItem(id, authorization)
+
+    override fun deleteSupplier(id: Int, authorization: String): Flow<UiState<Delete>> =
+        shopRepository.deleteSupplier(id, authorization)
 }

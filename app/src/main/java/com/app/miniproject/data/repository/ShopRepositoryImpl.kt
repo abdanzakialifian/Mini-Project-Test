@@ -5,10 +5,7 @@ import androidx.paging.map
 import com.app.miniproject.data.source.local.LocalDataSource
 import com.app.miniproject.data.source.remote.RemoteDataSource
 import com.app.miniproject.domain.interfaces.ShopRepository
-import com.app.miniproject.domain.model.DataItem
-import com.app.miniproject.domain.model.Login
-import com.app.miniproject.domain.model.Registration
-import com.app.miniproject.domain.model.Supplier
+import com.app.miniproject.domain.model.*
 import com.app.miniproject.utils.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -61,6 +58,24 @@ class ShopRepositoryImpl @Inject constructor(
         remoteDataSource.getSupplierList(authorization).map { pagingData ->
             pagingData.map { map ->
                 map.toSupplier()
+            }
+        }
+
+    override fun deleteItem(id: Int, authorization: String): Flow<UiState<Delete>> =
+        remoteDataSource.deleteItem(id, authorization).map { uiState ->
+            when (uiState) {
+                is UiState.Loading -> UiState.Loading
+                is UiState.Success -> UiState.Success(uiState.data.toDelete())
+                is UiState.Error -> UiState.Error(uiState.message)
+            }
+        }
+
+    override fun deleteSupplier(id: Int, authorization: String): Flow<UiState<Delete>> =
+        remoteDataSource.deleteSupplier(id, authorization).map { uiState ->
+            when (uiState) {
+                is UiState.Loading -> UiState.Loading
+                is UiState.Success -> UiState.Success(uiState.data.toDelete())
+                is UiState.Error -> UiState.Error(uiState.message)
             }
         }
 }

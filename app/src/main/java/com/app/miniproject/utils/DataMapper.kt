@@ -1,9 +1,6 @@
 package com.app.miniproject.utils
 
-import com.app.miniproject.data.source.remote.response.DataItemResponse
-import com.app.miniproject.data.source.remote.response.LoginResponse
-import com.app.miniproject.data.source.remote.response.RegistrationResponse
-import com.app.miniproject.data.source.remote.response.SupplierResponse
+import com.app.miniproject.data.source.remote.response.*
 import com.app.miniproject.domain.model.*
 
 fun RegistrationResponse.toRegistration(): Registration {
@@ -51,3 +48,5 @@ fun SupplierResponse.toSupplier(): Supplier = Supplier(
     noTelp = this.noTelp,
     alamat = this.alamat
 )
+
+fun DeleteResponse.toDelete(): Delete = Delete(message = this.message, status = this.status)

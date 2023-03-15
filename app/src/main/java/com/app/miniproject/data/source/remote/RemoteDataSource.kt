@@ -5,10 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.app.miniproject.data.source.remote.paging.ItemPagingSource
 import com.app.miniproject.data.source.remote.paging.SupplierPagingSource
-import com.app.miniproject.data.source.remote.response.DataItemResponse
-import com.app.miniproject.data.source.remote.response.LoginResponse
-import com.app.miniproject.data.source.remote.response.RegistrationResponse
-import com.app.miniproject.data.source.remote.response.SupplierResponse
+import com.app.miniproject.data.source.remote.response.*
 import com.app.miniproject.data.source.remote.services.ApiService
 import com.app.miniproject.utils.UiState
 import kotlinx.coroutines.flow.Flow
@@ -68,4 +65,28 @@ class RemoteDataSource @Inject constructor(
             }
         }
     ).flow
+
+    fun deleteItem(id: Int, authorization: String): Flow<UiState<DeleteResponse>> = flow {
+        emit(UiState.Loading)
+        val response = apiService.deleteItem(id, authorization)
+        val responseBody = response.body()
+
+        if (response.isSuccessful && responseBody != null) {
+            emit(UiState.Success(responseBody))
+        } else {
+            emit(UiState.Error(responseBody?.message.toString()))
+        }
+    }
+
+    fun deleteSupplier(id: Int, authorization: String): Flow<UiState<DeleteResponse>> = flow {
+        emit(UiState.Loading)
+        val response = apiService.deleteSupplier(id, authorization)
+        val responseBody = response.body()
+
+        if (response.isSuccessful && responseBody != null) {
+            emit(UiState.Success(responseBody))
+        } else {
+            emit(UiState.Error(responseBody?.message.toString()))
+        }
+    }
 }

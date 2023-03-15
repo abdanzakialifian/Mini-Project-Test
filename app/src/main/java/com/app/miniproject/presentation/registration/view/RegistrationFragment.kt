@@ -2,7 +2,6 @@ package com.app.miniproject.presentation.registration.view
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
@@ -16,6 +15,7 @@ import com.app.miniproject.presentation.base.BaseVBFragment
 import com.app.miniproject.presentation.registration.viewmodel.RegistrationViewModel
 import com.app.miniproject.utils.UiState
 import com.app.miniproject.utils.gone
+import com.app.miniproject.utils.showSnackBar
 import com.app.miniproject.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -63,21 +63,15 @@ class RegistrationFragment : BaseVBFragment<FragmentRegistrationBinding>() {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect { uiState ->
                     when (uiState) {
-                        is UiState.Loading -> Toast.makeText(
-                            requireContext(),
-                            "Loading",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        is UiState.Success -> Toast.makeText(
-                            requireContext(),
-                            "Berhasil : ${uiState.data}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        is UiState.Error -> Toast.makeText(
-                            requireContext(),
-                            "ERROR",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        is UiState.Loading -> binding.progressBar.visible()
+                        is UiState.Success -> {
+                            binding.progressBar.gone()
+                            view?.showSnackBar(layoutInflater, uiState.data.message.toString())
+                        }
+                        is UiState.Error -> {
+                            binding.progressBar.gone()
+                            view?.showSnackBar(layoutInflater, uiState.message)
+                        }
                     }
                 }
         }

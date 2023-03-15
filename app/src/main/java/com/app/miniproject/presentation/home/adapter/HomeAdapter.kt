@@ -17,6 +17,12 @@ class HomeAdapter @Inject constructor() :
 
     private var isExpanded = false
 
+    private lateinit var onButtonClickCallback: OnButtonClickCallback
+
+    fun setOnButtonClickCallback(onButtonClickCallback: OnButtonClickCallback) {
+        this.onButtonClickCallback = onButtonClickCallback
+    }
+
     inner class HomeViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DataItem?) {
@@ -38,6 +44,12 @@ class HomeAdapter @Inject constructor() :
                         layoutMoreInfoContent.collapse()
                     }
                 }
+                btnDelete.setOnClickListener {
+                    onButtonClickCallback.onDeleteClicked(item)
+                }
+                btnUpdate.setOnClickListener {
+                    onButtonClickCallback.onUpdateClicked(item)
+                }
             }
         }
     }
@@ -51,6 +63,11 @@ class HomeAdapter @Inject constructor() :
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
         holder.bind(getItem(position))
+    }
+
+    interface OnButtonClickCallback {
+        fun onDeleteClicked(item: DataItem?)
+        fun onUpdateClicked(item: DataItem?)
     }
 
     companion object {

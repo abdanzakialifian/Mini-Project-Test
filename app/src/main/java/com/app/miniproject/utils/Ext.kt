@@ -1,11 +1,15 @@
 package com.app.miniproject.utils
 
+import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.app.miniproject.R
 import com.google.android.material.snackbar.Snackbar
@@ -88,4 +92,30 @@ fun Int.formatRupiah(): String {
     val localeID = Locale("in", "ID")
     val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
     return formatRupiah.format(this)
+}
+
+fun Context.showAlertDialogInformation(
+    layoutInflater: LayoutInflater,
+    title: String,
+    subTitle: String,
+    onOkClickCallback: (AlertDialog, ProgressBar) -> Unit,
+) {
+    val builder = AlertDialog.Builder(this)
+    val customLayout = layoutInflater.inflate(R.layout.custom_alert_dialog_information, null)
+    builder.setView(customLayout)
+    val tvTitle = customLayout.findViewById<TextView>(R.id.tv_title)
+    val tvSubTitle = customLayout.findViewById<TextView>(R.id.tv_sub_title)
+    val btnOk = customLayout.findViewById<TextView>(R.id.tv_ok)
+    val btnCancel = customLayout.findViewById<TextView>(R.id.tv_cancel)
+    val progressBar = customLayout.findViewById<ProgressBar>(R.id.progress_bar)
+    val dialog = builder.create()
+    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    dialog.setCanceledOnTouchOutside(false)
+    tvTitle.text = title
+    tvSubTitle.text = subTitle
+    btnOk.setOnClickListener {
+        onOkClickCallback.invoke(dialog, progressBar)
+    }
+    btnCancel.setOnClickListener { dialog.dismiss() }
+    dialog.show()
 }

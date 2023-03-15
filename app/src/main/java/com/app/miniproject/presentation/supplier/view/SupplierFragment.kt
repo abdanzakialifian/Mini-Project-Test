@@ -7,13 +7,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
+import com.app.miniproject.R
 import com.app.miniproject.databinding.FragmentSupplierBinding
+import com.app.miniproject.domain.model.Supplier
 import com.app.miniproject.presentation.base.BaseVBFragment
 import com.app.miniproject.presentation.supplier.adapter.SupplierAdapter
 import com.app.miniproject.presentation.supplier.viewmodel.SupplierViewModel
-import com.app.miniproject.utils.gone
-import com.app.miniproject.utils.showSnackBar
-import com.app.miniproject.utils.visible
+import com.app.miniproject.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,6 +33,7 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         callApi()
+        setButtonClicked()
     }
 
     private fun callApi() {
@@ -72,6 +73,55 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
                                     }
                                     view?.showSnackBar(
                                         layoutInflater, state.error.message.toString()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setButtonClicked() {
+        supplierAdapter.setOnButtonClickCallback(object : SupplierAdapter.OnButtonClickCallback {
+            override fun onDeleteClicked(item: Supplier?) {
+                customAlterDialog(item)
+            }
+
+            override fun onUpdateClicked(item: Supplier?) {}
+        })
+    }
+
+    private fun customAlterDialog(item: Supplier?) {
+        val title = resources.getString(R.string.title_alert_dialog_information)
+        val subTitle =
+            resources.getString(R.string.sub_title_alert_dialog_information, item?.namaSupplier)
+        requireContext().showAlertDialogInformation(layoutInflater, title, subTitle) { alertDialog, progressBar ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    launch {
+                        viewModel.getUserToken.collect { token ->
+                            viewModel.setToken("Bearer $token")
+                        }
+                    }
+                    launch {
+                        viewModel.setId(item?.id ?: 0)
+                    }
+                    launch {
+                        viewModel.deleteSupplier.collect { uiState ->
+                            when (uiState) {
+                                is UiState.Loading -> progressBar.visible()
+                                is UiState.Success -> {
+                                    alertDialog.dismiss()
+                                    progressBar.gone()
+                                    callApi()
+                                }
+                                is UiState.Error -> {
+                                    progressBar.gone()
+                                    view?.showSnackBar(
+                                        layoutInflater,
+                                        uiState.message
                                     )
                                 }
                             }

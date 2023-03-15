@@ -16,4 +16,6 @@ interface ShopUseCase {
     fun getUserToken(): Flow<String>
     fun getItemsList(authorization: String): Flow<PagingData<DataItem>>
     fun getSupplierList(authorization: String): Flow<PagingData<Supplier>>
+    fun deleteItem(id: Int, authorization: String): Flow<UiState<Delete>>
+    fun deleteSupplier(id: Int, authorization: String): Flow<UiState<Delete>>
 }

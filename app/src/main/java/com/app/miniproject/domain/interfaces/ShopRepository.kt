@@ -1,10 +1,7 @@
 package com.app.miniproject.domain.interfaces
 
 import androidx.paging.PagingData
-import com.app.miniproject.domain.model.DataItem
-import com.app.miniproject.domain.model.Login
-import com.app.miniproject.domain.model.Registration
-import com.app.miniproject.domain.model.Supplier
+import com.app.miniproject.domain.model.*
 import com.app.miniproject.utils.UiState
 import kotlinx.coroutines.flow.Flow
 import okhttp3.RequestBody
@@ -18,4 +15,6 @@ interface ShopRepository {
     fun getUserToken(): Flow<String>
     fun getItemsList(authorization: String): Flow<PagingData<DataItem>>
     fun getSupplierList(authorization: String): Flow<PagingData<Supplier>>
+    fun deleteItem(id: Int, authorization: String): Flow<UiState<Delete>>
+    fun deleteSupplier(id: Int, authorization: String): Flow<UiState<Delete>>
 }

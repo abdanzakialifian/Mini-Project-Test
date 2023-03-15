@@ -20,4 +20,8 @@
     <string name="price">Price</string>
     <string name="delete">Delete</string>
     <string name="update">Update</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_alert_dialog_information">Are you sure?</string>
+    <string name="sub_title_alert_dialog_information">Click OK if you are sure you want to delete data %s.</string>
 </resources>

@@ -16,6 +16,12 @@ class SupplierAdapter @Inject constructor() :
 
     private var isExpanded = false
 
+    private lateinit var onButtonClickCallback: OnButtonClickCallback
+
+    fun setOnButtonClickCallback(onButtonClickCallback: OnButtonClickCallback) {
+        this.onButtonClickCallback = onButtonClickCallback
+    }
+
     inner class SupplierViewHolder(private val binding: ItemListSupplierBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Supplier?) {
@@ -35,6 +41,12 @@ class SupplierAdapter @Inject constructor() :
                         layoutMoreInfoContent.collapse()
                     }
                 }
+                btnDelete.setOnClickListener {
+                    onButtonClickCallback.onDeleteClicked(item)
+                }
+                btnUpdate.setOnClickListener {
+                    onButtonClickCallback.onUpdateClicked(item)
+                }
             }
         }
     }
@@ -48,6 +60,11 @@ class SupplierAdapter @Inject constructor() :
 
     override fun onBindViewHolder(holder: SupplierViewHolder, position: Int) {
         holder.bind(getItem(position))
+    }
+
+    interface OnButtonClickCallback {
+        fun onDeleteClicked(item: Supplier?)
+        fun onUpdateClicked(item: Supplier?)
     }
 
     companion object {

@@ -24,4 +24,9 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
     }
 
     override fun getUserSession(): Flow<Boolean> = shopRepository.getUserSession()
+    override suspend fun saveUserToken(token: String) {
+        shopRepository.saveUserToken(token)
+    }
+
+    override fun getUserToken(): Flow<String> = shopRepository.getUserToken()
 }

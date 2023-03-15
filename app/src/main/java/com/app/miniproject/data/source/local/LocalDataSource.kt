@@ -12,4 +12,9 @@ class LocalDataSource @Inject constructor(private val shopDataStore: ShopDataSto
     }
 
     fun getUserSession(): Flow<Boolean> = shopDataStore.getUserSession()
+    suspend fun saveUserToken(token: String) {
+        shopDataStore.saveUserToken(token)
+    }
+
+    fun getUserToken(): Flow<String> = shopDataStore.getUserToken()
 }

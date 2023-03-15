@@ -28,4 +28,10 @@ class LoginViewModel @Inject constructor(private val shopUseCase: ShopUseCase) :
             shopUseCase.saveUserSession(isLogin)
         }
     }
+
+    fun saveUserToken(token: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            shopUseCase.saveUserToken(token)
+        }
+    }
 }

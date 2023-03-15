@@ -41,4 +41,10 @@ class ShopRepositoryImpl @Inject constructor(
     }
 
     override fun getUserSession(): Flow<Boolean> = localDataSource.getUserSession()
+
+    override suspend fun saveUserToken(token: String) {
+        localDataSource.saveUserToken(token)
+    }
+
+    override fun getUserToken(): Flow<String> = localDataSource.getUserToken()
 }

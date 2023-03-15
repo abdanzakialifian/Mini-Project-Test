@@ -11,4 +11,6 @@ interface ShopUseCase {
     fun postLogin(requestBody: RequestBody): Flow<UiState<Login>>
     suspend fun saveUserSession(isLogin: Boolean)
     fun getUserSession(): Flow<Boolean>
+    suspend fun saveUserToken(token: String)
+    fun getUserToken(): Flow<String>
 }

@@ -66,10 +66,11 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
                             requireContext(), "Loading", Toast.LENGTH_SHORT
                         ).show()
                         is UiState.Success -> {
-                            Toast.makeText(
-                                requireContext(), "Berhasil : ${uiState.data}", Toast.LENGTH_SHORT
-                            ).show()
                             viewModel.saveUserSession(true)
+                            viewModel.saveUserToken(uiState.data.data?.token ?: "")
+                            val actionToContainerFragment =
+                                LoginFragmentDirections.actionLoginFragmentToContainerFragment()
+                            findNavController().navigate(actionToContainerFragment)
                         }
                         is UiState.Error -> Toast.makeText(
                             requireContext(), "ERROR", Toast.LENGTH_SHORT

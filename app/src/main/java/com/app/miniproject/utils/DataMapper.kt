@@ -1,11 +1,10 @@
 package com.app.miniproject.utils
 
+import com.app.miniproject.data.source.remote.response.DataItemResponse
+import com.app.miniproject.data.source.remote.response.ItemResponse
 import com.app.miniproject.data.source.remote.response.LoginResponse
 import com.app.miniproject.data.source.remote.response.RegistrationResponse
-import com.app.miniproject.domain.model.Login
-import com.app.miniproject.domain.model.LoginData
-import com.app.miniproject.domain.model.Registration
-import com.app.miniproject.domain.model.RegistrationData
+import com.app.miniproject.domain.model.*
 
 fun RegistrationResponse.toRegistration(): Registration {
     val data = RegistrationData(
@@ -28,4 +27,32 @@ fun LoginResponse.toLogin(): Login {
         token = this.data?.token
     )
     return Login(data = data, message = this.message, status = this.status)
+}
+
+fun DataItemResponse.toDataItem(): DataItem {
+//    val listData = this.data?.map {
+        val supplier = Supplier(
+            namaSupplier = this.supplier?.namaSupplier,
+            id = this.supplier?.id,
+            noTelp = this.supplier?.noTelp,
+            alamat = this.supplier?.alamat
+        )
+        return DataItem(
+            harga = this.harga,
+            supplier = supplier,
+            id = this.id,
+            namaBarang = this.namaBarang,
+            stok = this.stok
+        )
+//    }
+
+//    return Item(
+//        data = listData,
+//        limit = this.limit,
+//        totalPage = this.totalPage,
+//        page = this.page,
+//        message = this.message,
+//        status = this.status,
+//        totalRecord = this.totalRecord
+//    )
 }

@@ -78,6 +78,10 @@ dependencies {
     // lottie animation
     implementation "com.airbnb.android:lottie:$lottie_version"
 
+    // data store
     implementation "androidx.datastore:datastore-preferences:$data_store_version"
     implementation "androidx.datastore:datastore-preferences-core:$data_store_version"
+
+    // paging 3
+    implementation "androidx.paging:paging-runtime:$paging_version"
 }

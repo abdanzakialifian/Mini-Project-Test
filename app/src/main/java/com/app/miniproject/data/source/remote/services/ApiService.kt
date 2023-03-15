@@ -1,5 +1,7 @@
 package com.app.miniproject.data.source.remote.services
 
+import com.app.miniproject.data.source.remote.response.DataItemResponse
+import com.app.miniproject.data.source.remote.response.ItemResponse
 import com.app.miniproject.data.source.remote.response.LoginResponse
 import com.app.miniproject.data.source.remote.response.RegistrationResponse
 import okhttp3.RequestBody
@@ -23,17 +25,17 @@ interface ApiService {
     ): Response<RegistrationResponse>
 
     @GET("barang/find-all")
-    fun getItemsList(
-        @Query("Offsite") offsite: Int,
-        @Body requestBody: RequestBody,
-        @Header("Authorizations") authorizations: String
-    )
+    suspend fun getItemsList(
+        @Query("offset") offsite: Int,
+        @Query("limit") limit: Int,
+        @Header("Authorization") authorization: String
+    ): ItemResponse
 
     @GET("supplier/find-all")
-    fun getSuppliersList(
-        @Query("Offsite") offsite: Int,
-        @Body requestBody: RequestBody,
-        @Header("Authorizations") authorizations: String
+    suspend fun getSuppliersList(
+        @Query("offset") offsite: Int,
+        @Query("limit") limit: Int,
+        @Header("Authorization") authorization: String
     )
 
     @FormUrlEncoded

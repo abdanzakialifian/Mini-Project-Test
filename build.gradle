@@ -10,6 +10,7 @@ buildscript {
         navigation_version = '2.5.3'
         lottie_version = '5.2.0'
         data_store_version = '1.0.0'
+        paging_version = '3.1.1'
     }
 }
 plugins {

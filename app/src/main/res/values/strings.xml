@@ -13,4 +13,9 @@
     <string name="supplier">Supplier</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
+    <string name="address">Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="supplier_name">Supplier Name</string>
+    <string name="stock">Stock</string>
+    <string name="price">Price</string>
 </resources>

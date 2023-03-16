@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -27,6 +28,9 @@ import org.json.JSONObject
 class RegistrationFragment : BaseVBFragment<FragmentRegistrationBinding>() {
 
     private val viewModel by viewModels<RegistrationViewModel>()
+    private var isNameNotEmpty = false
+    private var isUsernameNotEmpty = false
+    private var isPasswordNotEmpty = false
 
     override fun getViewBinding(): FragmentRegistrationBinding =
         FragmentRegistrationBinding.inflate(layoutInflater)
@@ -35,6 +39,11 @@ class RegistrationFragment : BaseVBFragment<FragmentRegistrationBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         handleTextInputPassword()
+        setButtonClicked()
+        buttonState()
+    }
+
+    private fun setButtonClicked() {
         binding.apply {
             btnSignUp.setOnClickListener {
                 callApi()
@@ -44,6 +53,40 @@ class RegistrationFragment : BaseVBFragment<FragmentRegistrationBinding>() {
             }
             tvSignIn.setOnClickListener {
                 findNavController().navigateUp()
+            }
+        }
+    }
+
+    private fun handleTextInputPassword() {
+        binding.apply {
+            edtPassword.doAfterTextChanged {
+                if (it?.isNotEmpty() == true && it.length < 8) {
+                    hintErrorPassword.visible()
+                    inputLayoutPassword.boxStrokeColor =
+                        ContextCompat.getColor(requireContext(), R.color.red)
+                } else {
+                    hintErrorPassword.gone()
+                    inputLayoutPassword.isErrorEnabled = false
+                    inputLayoutPassword.boxStrokeColor =
+                        ContextCompat.getColor(requireContext(), R.color.green)
+                }
+            }
+        }
+    }
+
+    private fun buttonState() {
+        binding.apply {
+            edtName.doOnTextChanged { text, _, _, _ ->
+                isNameNotEmpty = text?.isNotEmpty() == true
+                btnSignUp.isEnabled = isNameNotEmpty && isUsernameNotEmpty && isPasswordNotEmpty
+            }
+            edtUsername.doOnTextChanged { text, _, _, _ ->
+                isUsernameNotEmpty = text?.isNotEmpty() == true
+                btnSignUp.isEnabled = isNameNotEmpty && isUsernameNotEmpty && isPasswordNotEmpty
+            }
+            edtPassword.doOnTextChanged { text, _, _, _ ->
+                isPasswordNotEmpty = text?.isNotEmpty() == true && text.length >= 8
+                btnSignUp.isEnabled = isNameNotEmpty && isUsernameNotEmpty && isPasswordNotEmpty
             }
         }
     }
@@ -65,7 +108,12 @@ class RegistrationFragment : BaseVBFragment<FragmentRegistrationBinding>() {
                     when (uiState) {
                         is UiState.Loading -> binding.progressBar.visible()
                         is UiState.Success -> {
-                            binding.progressBar.gone()
+                            binding.apply {
+                                edtName.text?.clear()
+                                edtUsername.text?.clear()
+                                edtPassword.text?.clear()
+                                progressBar.gone()
+                            }
                             view?.showSnackBar(layoutInflater, uiState.data.message.toString())
                         }
                         is UiState.Error -> {
@@ -74,23 +122,6 @@ class RegistrationFragment : BaseVBFragment<FragmentRegistrationBinding>() {
                         }
                     }
                 }
-        }
-    }
-
-    private fun handleTextInputPassword() {
-        binding.apply {
-            edtPassword.doAfterTextChanged {
-                if (it?.isNotEmpty() == true && it.length < 8) {
-                    hintErrorPassword.visible()
-                    inputLayoutPassword.boxStrokeColor =
-                        ContextCompat.getColor(requireContext(), R.color.red)
-                } else {
-                    hintErrorPassword.gone()
-                    inputLayoutPassword.isErrorEnabled = false
-                    inputLayoutPassword.boxStrokeColor =
-                        ContextCompat.getColor(requireContext(), R.color.green)
-                }
-            }
         }
     }
 }

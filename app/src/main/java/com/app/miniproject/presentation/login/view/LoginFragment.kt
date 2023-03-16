@@ -1,10 +1,11 @@
 package com.app.miniproject.presentation.login.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -24,11 +25,12 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
-
 @AndroidEntryPoint
 class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
 
     private val viewModel by viewModels<LoginViewModel>()
+    private var isUsernameNotEmpty = false
+    private var isPasswordNotEmpty = false
 
     override fun getViewBinding(): FragmentLoginBinding =
         FragmentLoginBinding.inflate(layoutInflater)
@@ -37,6 +39,11 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         handleTextInputPassword()
+        setButtonClicked()
+        buttonState()
+    }
+
+    private fun setButtonClicked() {
         binding.apply {
             btnSignIn.setOnClickListener {
                 callApi()
@@ -45,6 +52,36 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
                 val navigateToRegistrationFragment =
                     LoginFragmentDirections.actionLoginFragmentToRegistrationFragment()
                 findNavController().navigate(navigateToRegistrationFragment)
+            }
+        }
+    }
+
+    private fun handleTextInputPassword() {
+        binding.apply {
+            edtPassword.doAfterTextChanged {
+                if (it?.isNotEmpty() == true && it.length < 8) {
+                    hintErrorPassword.visible()
+                    inputLayoutPassword.boxStrokeColor =
+                        ContextCompat.getColor(requireContext(), R.color.red)
+                } else {
+                    hintErrorPassword.gone()
+                    inputLayoutPassword.isErrorEnabled = false
+                    inputLayoutPassword.boxStrokeColor =
+                        ContextCompat.getColor(requireContext(), R.color.green)
+                }
+            }
+        }
+    }
+
+    private fun buttonState() {
+        binding.apply {
+            edtUsername.doOnTextChanged { text, _, _, _ ->
+                isUsernameNotEmpty = text?.isNotEmpty() ?: false
+                btnSignIn.isEnabled = isUsernameNotEmpty && isPasswordNotEmpty
+            }
+            edtPassword.doOnTextChanged { text, _, _, _ ->
+                isPasswordNotEmpty = text?.isNotEmpty() == true && text.length >= 8
+                btnSignIn.isEnabled = isUsernameNotEmpty && isPasswordNotEmpty
             }
         }
     }
@@ -78,23 +115,6 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
                         }
                     }
                 }
-        }
-    }
-
-    private fun handleTextInputPassword() {
-        binding.apply {
-            edtPassword.doAfterTextChanged {
-                if (it?.isNotEmpty() == true && it.length < 8) {
-                    hintErrorPassword.visible()
-                    inputLayoutPassword.boxStrokeColor =
-                        ContextCompat.getColor(requireContext(), R.color.red)
-                } else {
-                    hintErrorPassword.gone()
-                    inputLayoutPassword.isErrorEnabled = false
-                    inputLayoutPassword.boxStrokeColor =
-                        ContextCompat.getColor(requireContext(), R.color.green)
-                }
-            }
         }
     }
 }

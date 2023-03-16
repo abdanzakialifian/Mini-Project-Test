@@ -171,6 +171,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_button_green"
+                android:backgroundTint="@color/bg_button_state"
+                android:enabled="false"
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/sign_up"
                 android:textAllCaps="false"
@@ -180,10 +182,10 @@
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
-            android:layout_centerInParent="true"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
             android:visibility="gone" />
 
     </RelativeLayout>

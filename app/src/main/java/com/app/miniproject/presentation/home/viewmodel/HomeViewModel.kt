@@ -3,7 +3,9 @@ package com.app.miniproject.presentation.home.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import com.app.miniproject.data.source.remote.response.DataItemResponse
 import com.app.miniproject.domain.interfaces.ShopUseCase
+import com.app.miniproject.domain.model.CreateItem
 import com.app.miniproject.domain.model.DataItem
 import com.app.miniproject.domain.model.Delete
 import com.app.miniproject.utils.UiState
@@ -14,11 +16,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val shopUseCase: ShopUseCase) : ViewModel() {
+    private val data = MutableStateFlow(DataItemResponse())
     private val authorization = MutableStateFlow("")
     private val id = MutableStateFlow(0)
 
     fun setToken(authorization: String) {
         this.authorization.value = authorization
+    }
+
+    fun setRequestBody(data: DataItemResponse) {
+        this.data.value = data
     }
 
     fun setId(id: Int) {
@@ -54,5 +61,16 @@ class HomeViewModel @Inject constructor(private val shopUseCase: ShopUseCase) : 
             started = SharingStarted.WhileSubscribed(),
             initialValue = PagingData.empty()
         )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val createItem: Flow<UiState<CreateItem>> = authorization.flatMapLatest { authorization ->
+        data.flatMapLatest { data ->
+            shopUseCase.createItem(data, authorization).stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = UiState.Loading
+            )
+        }
     }
 }

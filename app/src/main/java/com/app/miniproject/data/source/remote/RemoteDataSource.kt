@@ -22,23 +22,31 @@ class RemoteDataSource @Inject constructor(
 ) {
     fun postRegistration(requestBody: RequestBody): Flow<UiState<RegistrationResponse>> = flow {
         emit(UiState.Loading)
-        val response = apiService.postRegistration(requestBody)
-        val responseBody = response.body()
-        if (response.isSuccessful && responseBody != null) {
-            emit(UiState.Success(responseBody))
-        } else {
-            emit(UiState.Error(responseBody?.message.toString()))
+        try {
+            val response = apiService.postRegistration(requestBody)
+            val responseBody = response.body()
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
         }
     }
 
     fun postLogin(requestBody: RequestBody): Flow<UiState<LoginResponse>> = flow {
         emit(UiState.Loading)
-        val response = apiService.postLogin(requestBody)
-        val responseBody = response.body()
-        if (response.isSuccessful && responseBody != null) {
-            emit(UiState.Success(responseBody))
-        } else {
-            emit(UiState.Error(responseBody?.message.toString()))
+        try {
+            val response = apiService.postLogin(requestBody)
+            val responseBody = response.body()
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
         }
     }
 
@@ -68,25 +76,51 @@ class RemoteDataSource @Inject constructor(
 
     fun deleteItem(id: Int, authorization: String): Flow<UiState<DeleteResponse>> = flow {
         emit(UiState.Loading)
-        val response = apiService.deleteItem(id, authorization)
-        val responseBody = response.body()
+        try {
+            val response = apiService.deleteItem(id, authorization)
+            val responseBody = response.body()
 
-        if (response.isSuccessful && responseBody != null) {
-            emit(UiState.Success(responseBody))
-        } else {
-            emit(UiState.Error(responseBody?.message.toString()))
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
         }
     }
 
     fun deleteSupplier(id: Int, authorization: String): Flow<UiState<DeleteResponse>> = flow {
         emit(UiState.Loading)
-        val response = apiService.deleteSupplier(id, authorization)
-        val responseBody = response.body()
+        try {
+            val response = apiService.deleteSupplier(id, authorization)
+            val responseBody = response.body()
 
-        if (response.isSuccessful && responseBody != null) {
-            emit(UiState.Success(responseBody))
-        } else {
-            emit(UiState.Error(responseBody?.message.toString()))
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
+        }
+    }
+
+    fun createItem(
+        data: DataItemResponse,
+        authorization: String
+    ): Flow<UiState<CreateItemResponse>> = flow {
+        emit(UiState.Loading)
+        try {
+            val response = apiService.createItem(data, authorization)
+            val responseBody = response.body()
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.app.miniproject.domain.interfaces
 
 import androidx.paging.PagingData
+import com.app.miniproject.data.source.remote.response.CreateItemResponse
+import com.app.miniproject.data.source.remote.response.DataItemResponse
 import com.app.miniproject.domain.model.*
 import com.app.miniproject.utils.UiState
 import kotlinx.coroutines.flow.Flow
@@ -17,4 +19,5 @@ interface ShopRepository {
     fun getSupplierList(authorization: String): Flow<PagingData<Supplier>>
     fun deleteItem(id: Int, authorization: String): Flow<UiState<Delete>>
     fun deleteSupplier(id: Int, authorization: String): Flow<UiState<Delete>>
+    fun createItem(data: DataItemResponse, authorization: String): Flow<UiState<CreateItem>>
 }

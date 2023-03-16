@@ -48,4 +48,10 @@ interface ApiService {
         @Path("id") id: Int,
         @Header("Authorization") authorization: String
     ): Response<DeleteResponse>
+
+    @POST("barang/create")
+    suspend fun createItem(
+        @Body data: DataItemResponse,
+        @Header("Authorization") authorization: String
+    ): Response<CreateItemResponse>
 }

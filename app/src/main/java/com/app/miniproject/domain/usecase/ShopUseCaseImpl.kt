@@ -1,6 +1,7 @@
 package com.app.miniproject.domain.usecase
 
 import androidx.paging.PagingData
+import com.app.miniproject.data.source.remote.response.DataItemResponse
 import com.app.miniproject.domain.interfaces.ShopRepository
 import com.app.miniproject.domain.interfaces.ShopUseCase
 import com.app.miniproject.domain.model.*
@@ -42,4 +43,10 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
 
     override fun deleteSupplier(id: Int, authorization: String): Flow<UiState<Delete>> =
         shopRepository.deleteSupplier(id, authorization)
+
+    override fun createItem(
+        data: DataItemResponse,
+        authorization: String
+    ): Flow<UiState<CreateItem>> =
+        shopRepository.createItem(data, authorization)
 }

@@ -37,8 +37,25 @@ class ShopDataStore @Inject constructor(@ApplicationContext context: Context) {
         preference[USER_TOKEN] ?: ""
     }
 
+    suspend fun saveUserName(name: String) {
+        shopDataStore.edit { preference ->
+            preference[USER_NAME] = name
+        }
+    }
+
+    fun getUserName(): Flow<String> = shopDataStore.data.map { preference ->
+        preference[USER_NAME] ?: ""
+    }
+
+    suspend fun deleteLocalData() {
+        shopDataStore.edit { preference ->
+            preference.clear()
+        }
+    }
+
     companion object {
         private val USER_SESSION = booleanPreferencesKey("user_session")
         private val USER_TOKEN = stringPreferencesKey("user_token")
+        private val USER_NAME = stringPreferencesKey("user_name")
     }
 }

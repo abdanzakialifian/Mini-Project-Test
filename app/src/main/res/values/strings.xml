@@ -32,4 +32,6 @@
     <string name="item">Item</string>
     <string name="enter_phone_number">Enter Phone Number</string>
     <string name="enter_address">Enter Address</string>
+    <string name="logout">Logout</string>
+    <string name="make_sure_logout">"Are you sure you want to exit the application?"</string>
 </resources>

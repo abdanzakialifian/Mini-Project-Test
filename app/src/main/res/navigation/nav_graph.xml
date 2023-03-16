@@ -47,6 +47,13 @@
         android:id="@+id/containerFragment"
         android:name="com.app.miniproject.presentation.container.ContainerFragment"
         android:label="fragment_container"
-        tools:layout="@layout/fragment_container" />
+        tools:layout="@layout/fragment_container" >
+        <action
+            android:id="@+id/action_containerFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/containerFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
 </navigation>

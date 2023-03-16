@@ -15,6 +15,8 @@ interface ShopUseCase {
     fun getUserSession(): Flow<Boolean>
     suspend fun saveUserToken(token: String)
     fun getUserToken(): Flow<String>
+    suspend fun saveUserName(name: String)
+    fun getUserName(): Flow<String>
     fun getItemsList(authorization: String): Flow<PagingData<DataItem>>
     fun getSupplierList(authorization: String): Flow<PagingData<Supplier>>
     fun deleteItem(id: Int, authorization: String): Flow<UiState<Delete>>
@@ -27,4 +29,5 @@ interface ShopUseCase {
         authorization: String,
         data: SupplierResponse
     ): Flow<UiState<CreateSupplier>>
+    suspend fun deleteLocalData()
 }

@@ -8,7 +8,9 @@ import com.app.miniproject.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -32,6 +34,12 @@ class LoginViewModel @Inject constructor(private val shopUseCase: ShopUseCase) :
     fun saveUserToken(token: String) {
         CoroutineScope(Dispatchers.IO).launch {
             shopUseCase.saveUserToken(token)
+        }
+    }
+
+    fun saveUserName(name: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            shopUseCase.saveUserName(name)
         }
     }
 }

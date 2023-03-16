@@ -1,7 +1,6 @@
 package com.app.miniproject.presentation.login.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
@@ -105,6 +104,7 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
                             binding.progressBar.gone()
                             viewModel.saveUserSession(true)
                             viewModel.saveUserToken(uiState.data.data?.token ?: "")
+                            viewModel.saveUserName(uiState.data.data?.profileName ?: "")
                             val actionToContainerFragment =
                                 LoginFragmentDirections.actionLoginFragmentToContainerFragment()
                             findNavController().navigate(actionToContainerFragment)

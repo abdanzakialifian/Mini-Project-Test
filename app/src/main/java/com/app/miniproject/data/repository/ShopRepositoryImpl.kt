@@ -48,6 +48,11 @@ class ShopRepositoryImpl @Inject constructor(
     }
 
     override fun getUserToken(): Flow<String> = localDataSource.getUserToken()
+    override suspend fun saveUserName(name: String) {
+        localDataSource.saveUserName(name)
+    }
+
+    override fun getUserName(): Flow<String> = localDataSource.getUserName()
 
     override fun getItemsList(authorization: String): Flow<PagingData<DataItem>> =
         remoteDataSource.getItemsList(authorization).map { pagingData ->
@@ -130,4 +135,8 @@ class ShopRepositoryImpl @Inject constructor(
                 is UiState.Error -> UiState.Error(uiState.message)
             }
         }
+
+    override suspend fun deleteLocalData() {
+        localDataSource.deleteLocalData()
+    }
 }

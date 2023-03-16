@@ -32,6 +32,11 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
     }
 
     override fun getUserToken(): Flow<String> = shopRepository.getUserToken()
+    override suspend fun saveUserName(name: String) {
+        shopRepository.saveUserName(name)
+    }
+
+    override fun getUserName(): Flow<String> = shopRepository.getUserName()
 
     override fun getItemsList(authorization: String): Flow<PagingData<DataItem>> =
         shopRepository.getItemsList(authorization)
@@ -66,4 +71,8 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
         authorization: String,
         data: SupplierResponse
     ): Flow<UiState<CreateSupplier>> = shopRepository.updateSupplier(id, authorization, data)
+
+    override suspend fun deleteLocalData() {
+        shopRepository.deleteLocalData()
+    }
 }

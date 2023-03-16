@@ -189,11 +189,10 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
             stok = stock.toInt()
         )
 
+        viewModel.setData(data)
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.setData(data)
-                }
                 launch {
                     viewModel.getUserToken.collect { token ->
                         viewModel.setToken("Bearer $token")
@@ -241,14 +240,12 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
             stok = stock.toInt()
         )
 
+        viewModel.setData(data)
+
+        viewModel.setId(idItem)
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.setData(data)
-                }
-                launch {
-                    viewModel.setId(idItem)
-                }
                 launch {
                     viewModel.getUserToken.collect { token ->
                         viewModel.setToken("Bearer $token")
@@ -280,15 +277,14 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         requireContext().showAlertDialogInformation(
             layoutInflater, title, subTitle
         ) { alertDialog, progressBar ->
+            viewModel.setId(item?.id ?: 0)
+
             viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     launch {
                         viewModel.getUserToken.collect { token ->
                             viewModel.setToken("Bearer $token")
                         }
-                    }
-                    launch {
-                        viewModel.setId(item?.id ?: 0)
                     }
                     launch {
                         viewModel.deleteItem.collect { uiState ->

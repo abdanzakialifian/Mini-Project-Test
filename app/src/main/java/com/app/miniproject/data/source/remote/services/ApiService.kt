@@ -68,4 +68,11 @@ interface ApiService {
         @Header("Authorization") authorization: String,
         @Body data: DataItemResponse
     ): Response<CreateItemResponse>
+
+    @PUT("supplier/update/{id}")
+    suspend fun updateSupplier(
+        @Path("id") id: Int,
+        @Header("Authorization") authorization: String,
+        @Body data: SupplierResponse
+    ): Response<CreateSupplierResponse>
 }

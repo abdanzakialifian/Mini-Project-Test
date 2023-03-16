@@ -64,4 +64,17 @@ class SupplierViewModel @Inject constructor(private val shopUseCase: ShopUseCase
                 )
             }
         }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val updateItem: Flow<UiState<CreateSupplier>> = authorization.flatMapLatest { authorization ->
+        data.flatMapLatest { data ->
+            id.flatMapLatest { id ->
+                shopUseCase.updateSupplier(id, authorization, data).stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(),
+                    initialValue = UiState.Loading
+                )
+            }
+        }
+    }
 }

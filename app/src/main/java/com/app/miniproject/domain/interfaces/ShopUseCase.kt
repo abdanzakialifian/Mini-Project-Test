@@ -22,4 +22,9 @@ interface ShopUseCase {
     fun createItem(data: DataItemResponse, authorization: String): Flow<UiState<CreateItem>>
     fun createSupplier(data: SupplierResponse, authorization: String): Flow<UiState<CreateSupplier>>
     fun updateItem(id: Int, authorization: String, data: DataItemResponse): Flow<UiState<CreateItem>>
+    fun updateSupplier(
+        id: Int,
+        authorization: String,
+        data: SupplierResponse
+    ): Flow<UiState<CreateSupplier>>
 }

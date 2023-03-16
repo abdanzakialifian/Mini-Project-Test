@@ -49,10 +49,12 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
                 customAlterDialog(item)
             }
 
-            override fun onUpdateClicked(item: Supplier?) {}
+            override fun onUpdateClicked(item: Supplier?) {
+                customDialogCreate(Type.UPDATE, item)
+            }
         })
         binding.imgCreate.setOnClickListener {
-            customDialogCreate()
+            customDialogCreate(Type.CREATE)
         }
     }
 
@@ -145,6 +147,88 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
         }
     }
 
+    private fun callApiUpdateSupplier(
+        idSupplier: Int,
+        supplierName: String,
+        phoneNumber: String,
+        address: String,
+        alertDialog: AlertDialog,
+        progressBar: ProgressBar
+    ) {
+        val data = SupplierResponse(
+            namaSupplier = supplierName,
+            id = idSupplier,
+            noTelp = phoneNumber,
+            alamat = address
+        )
+
+        viewModel.setData(data)
+
+        viewModel.setId(idSupplier)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.getUserToken.collect { token ->
+                        viewModel.setToken("Bearer $token")
+                    }
+                }
+                launch {
+                    viewModel.updateItem.collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> progressBar.visible()
+                            is UiState.Success -> {
+                                alertDialog.dismiss()
+                                callApi()
+                            }
+                            is UiState.Error -> {
+                                progressBar.gone()
+                                view?.showSnackBar(layoutInflater, uiState.message)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun callApiDeleteSupplier(
+        idSupplier: Int,
+        alertDialog: AlertDialog,
+        progressBar: ProgressBar
+    ) {
+        viewModel.setId(idSupplier)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.getUserToken.collect { token ->
+                        viewModel.setToken("Bearer $token")
+                    }
+                }
+                launch {
+                    viewModel.deleteSupplier.collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> progressBar.visible()
+                            is UiState.Success -> {
+                                alertDialog.dismiss()
+                                progressBar.gone()
+                                callApi()
+                            }
+                            is UiState.Error -> {
+                                progressBar.gone()
+                                view?.showSnackBar(
+                                    layoutInflater,
+                                    uiState.message
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun customAlterDialog(item: Supplier?) {
         val title = resources.getString(R.string.title_alert_dialog_information)
         val subTitle =
@@ -154,41 +238,11 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
             title,
             subTitle
         ) { alertDialog, progressBar ->
-            viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    launch {
-                        viewModel.getUserToken.collect { token ->
-                            viewModel.setToken("Bearer $token")
-                        }
-                    }
-                    launch {
-                        viewModel.setId(item?.id ?: 0)
-                    }
-                    launch {
-                        viewModel.deleteSupplier.collect { uiState ->
-                            when (uiState) {
-                                is UiState.Loading -> progressBar.visible()
-                                is UiState.Success -> {
-                                    alertDialog.dismiss()
-                                    progressBar.gone()
-                                    callApi()
-                                }
-                                is UiState.Error -> {
-                                    progressBar.gone()
-                                    view?.showSnackBar(
-                                        layoutInflater,
-                                        uiState.message
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            callApiDeleteSupplier(item?.id ?: 0, alertDialog, progressBar)
         }
     }
 
-    private fun customDialogCreate() {
+    private fun customDialogCreate(type: Type, item: Supplier? = Supplier()) {
         val builder = AlertDialog.Builder(requireContext())
         val customLayout =
             layoutInflater.inflate(R.layout.custom_alert_dialog_create_supplier, null)
@@ -201,14 +255,35 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
         val btnCancel = customLayout.findViewById<AppCompatButton>(R.id.btn_cancel)
         val dialog = builder.create()
 
-        btnCreate.setOnClickListener {
-            callApiCreateSupplier(
-                edtSupplierName.text.toString(),
-                edtPhoneNumber.text.toString(),
-                edtAddress.text.toString(),
-                dialog,
-                progressBar
-            )
+        when (type) {
+            Type.CREATE -> {
+                btnCreate.text = resources.getString(R.string.create)
+                btnCreate.setOnClickListener {
+                    callApiCreateSupplier(
+                        edtSupplierName.text.toString(),
+                        edtPhoneNumber.text.toString(),
+                        edtAddress.text.toString(),
+                        dialog,
+                        progressBar
+                    )
+                }
+            }
+            Type.UPDATE -> {
+                edtSupplierName.text = item?.namaSupplier
+                edtPhoneNumber.text = item?.noTelp
+                edtAddress.text = item?.alamat
+                btnCreate.text = resources.getString(R.string.update)
+                btnCreate.setOnClickListener {
+                    callApiUpdateSupplier(
+                        item?.id ?: 0,
+                        edtSupplierName.text.toString(),
+                        edtPhoneNumber.text.toString(),
+                        edtAddress.text.toString(),
+                        dialog,
+                        progressBar
+                    )
+                }
+            }
         }
 
         btnCancel.setOnClickListener {

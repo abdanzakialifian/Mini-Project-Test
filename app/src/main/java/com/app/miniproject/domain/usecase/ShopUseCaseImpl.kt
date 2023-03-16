@@ -54,4 +54,10 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
         data: SupplierResponse,
         authorization: String
     ): Flow<UiState<CreateSupplier>> = shopRepository.createSupplier(data, authorization)
+
+    override fun updateItem(
+        id: Int,
+        authorization: String,
+        data: DataItemResponse
+    ): Flow<UiState<CreateItem>> = shopRepository.updateItem(id, authorization, data)
 }

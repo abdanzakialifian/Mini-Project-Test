@@ -141,4 +141,23 @@ class RemoteDataSource @Inject constructor(
             emit(UiState.Error(e.message.toString()))
         }
     }
+
+    fun updateItem(
+        id: Int,
+        authorization: String,
+        data: DataItemResponse
+    ): Flow<UiState<CreateItemResponse>> = flow {
+        emit(UiState.Loading)
+        try {
+            val response = apiService.updateItem(id, authorization, data)
+            val responseBody = response.body()
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
+        }
+    }
 }

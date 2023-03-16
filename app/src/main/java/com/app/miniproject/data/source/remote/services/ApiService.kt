@@ -9,6 +9,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -60,4 +61,11 @@ interface ApiService {
         @Body data: SupplierResponse,
         @Header("Authorization") authorization: String
     ): Response<CreateSupplierResponse>
+
+    @PUT("barang/update/{id}")
+    suspend fun updateItem(
+        @Path("id") id: Int,
+        @Header("Authorization") authorization: String,
+        @Body data: DataItemResponse
+    ): Response<CreateItemResponse>
 }

@@ -1,5 +1,6 @@
 package com.app.miniproject.presentation.home.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -71,6 +72,19 @@ class HomeViewModel @Inject constructor(private val shopUseCase: ShopUseCase) : 
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = UiState.Loading
             )
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val updateItem: Flow<UiState<CreateItem>> = authorization.flatMapLatest { authorization ->
+        data.flatMapLatest { data ->
+            id.flatMapLatest { id ->
+                shopUseCase.updateItem(id, authorization, data).stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(),
+                    initialValue = UiState.Loading
+                )
+            }
         }
     }
 }

@@ -64,11 +64,13 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
                 customAlterDialogInformation(item)
             }
 
-            override fun onUpdateClicked(item: DataItem?) {}
+            override fun onUpdateClicked(item: DataItem?) {
+                customDialogCreate(Type.UPDATE, item)
+            }
         })
 
         binding.imgCreate.setOnClickListener {
-            customDialogCreate()
+            customDialogCreate(Type.CREATE)
         }
     }
 
@@ -187,10 +189,11 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
             stok = stock.toInt()
         )
 
-        viewModel.setData(data)
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.setData(data)
+                }
                 launch {
                     viewModel.getUserToken.collect { token ->
                         viewModel.setToken("Bearer $token")
@@ -215,14 +218,67 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         }
     }
 
+    private fun callApiUpdateItem(
+        idItem: Int,
+        itemName: String,
+        stock: String,
+        price: String,
+        supplier: Supplier?,
+        alertDialog: AlertDialog,
+        progressBar: ProgressBar
+    ) {
+        val supplierResponse = SupplierResponse(
+            namaSupplier = supplier?.namaSupplier,
+            id = supplier?.id,
+            noTelp = supplier?.noTelp,
+            alamat = supplier?.alamat
+        )
+        val data = DataItemResponse(
+            harga = price.toInt(),
+            supplier = supplierResponse,
+            id = idItem,
+            namaBarang = itemName,
+            stok = stock.toInt()
+        )
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.setData(data)
+                }
+                launch {
+                    viewModel.setId(idItem)
+                }
+                launch {
+                    viewModel.getUserToken.collect { token ->
+                        viewModel.setToken("Bearer $token")
+                    }
+                }
+                launch {
+                    viewModel.updateItem.collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> progressBar.visible()
+                            is UiState.Success -> {
+                                alertDialog.dismiss()
+                                callApi()
+                            }
+                            is UiState.Error -> {
+                                progressBar.gone()
+                                view?.showSnackBar(layoutInflater, uiState.message)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun customAlterDialogInformation(item: DataItem?) {
         val title = resources.getString(R.string.title_alert_dialog_information)
         val subTitle =
             resources.getString(R.string.sub_title_alert_dialog_information, item?.namaBarang)
         requireContext().showAlertDialogInformation(
-            layoutInflater,
-            title,
-            subTitle
+            layoutInflater, title, subTitle
         ) { alertDialog, progressBar ->
             viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -246,8 +302,7 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
                                 is UiState.Error -> {
                                     progressBar.gone()
                                     view?.showSnackBar(
-                                        layoutInflater,
-                                        uiState.message
+                                        layoutInflater, uiState.message
                                     )
                                 }
                             }
@@ -258,7 +313,7 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         }
     }
 
-    private fun customDialogCreate() {
+    private fun customDialogCreate(type: Type, item: DataItem? = DataItem()) {
         val builder = AlertDialog.Builder(requireContext())
         val customLayout = layoutInflater.inflate(R.layout.custom_alert_dialog_create_item, null)
         builder.setView(customLayout)
@@ -275,6 +330,7 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         val btnCreate = customLayout.findViewById<AppCompatButton>(R.id.btn_create)
         val btnCancel = customLayout.findViewById<AppCompatButton>(R.id.btn_cancel)
         val dialog = builder.create()
+
         autoCompleteTextView.setOnClickListener {
             if (!isExpanded) {
                 expandedCardView(textInputLayout, cvDropDownContent)
@@ -284,15 +340,38 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
             }
         }
 
-        btnCreate.setOnClickListener {
-            callApiCreateItem(
-                edtItemName.text.toString(),
-                edtStock.text.toString(),
-                edtPrice.text.toString(),
-                supplier,
-                dialog,
-                progressBar
-            )
+        when (type) {
+            Type.CREATE -> {
+                btnCreate.text = resources.getString(R.string.create)
+                btnCreate.setOnClickListener {
+                    callApiCreateItem(
+                        edtItemName.text.toString(),
+                        edtStock.text.toString(),
+                        edtPrice.text.toString(),
+                        supplier,
+                        dialog,
+                        progressBar
+                    )
+                }
+            }
+            Type.UPDATE -> {
+                edtItemName.text = item?.namaBarang
+                edtStock.text = item?.stok.toString()
+                edtPrice.text = item?.harga.toString()
+                autoCompleteTextView.setText(item?.supplier?.namaSupplier)
+                btnCreate.text = resources.getString(R.string.update)
+                btnCreate.setOnClickListener {
+                    callApiUpdateItem(
+                        item?.id ?: 0,
+                        edtItemName.text.toString(),
+                        edtStock.text.toString(),
+                        edtPrice.text.toString(),
+                        if (supplier?.id != null) supplier else item?.supplier,
+                        dialog,
+                        progressBar
+                    )
+                }
+            }
         }
 
         supplierDropDownAdapter.setOnItemClickCallback(object :

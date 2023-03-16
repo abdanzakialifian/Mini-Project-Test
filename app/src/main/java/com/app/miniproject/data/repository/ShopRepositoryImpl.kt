@@ -104,4 +104,17 @@ class ShopRepositoryImpl @Inject constructor(
                 is UiState.Error -> UiState.Error(uiState.message)
             }
         }
+
+    override fun updateItem(
+        id: Int,
+        authorization: String,
+        data: DataItemResponse
+    ): Flow<UiState<CreateItem>> =
+        remoteDataSource.updateItem(id, authorization, data).map { uiState ->
+            when (uiState) {
+                is UiState.Loading -> UiState.Loading
+                is UiState.Success -> UiState.Success(uiState.data.toCreateItem())
+                is UiState.Error -> UiState.Error(uiState.message)
+            }
+        }
 }

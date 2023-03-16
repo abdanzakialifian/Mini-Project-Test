@@ -20,4 +20,5 @@ interface ShopUseCase {
     fun deleteItem(id: Int, authorization: String): Flow<UiState<Delete>>
     fun deleteSupplier(id: Int, authorization: String): Flow<UiState<Delete>>
     fun createItem(data: DataItemResponse, authorization: String): Flow<UiState<CreateItem>>
+    fun createSupplier(data: SupplierResponse, authorization: String): Flow<UiState<CreateSupplier>>
 }

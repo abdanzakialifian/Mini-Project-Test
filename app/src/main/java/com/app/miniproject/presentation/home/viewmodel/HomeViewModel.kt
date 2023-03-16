@@ -24,7 +24,7 @@ class HomeViewModel @Inject constructor(private val shopUseCase: ShopUseCase) : 
         this.authorization.value = authorization
     }
 
-    fun setRequestBody(data: DataItemResponse) {
+    fun setData(data: DataItemResponse) {
         this.data.value = data
     }
 

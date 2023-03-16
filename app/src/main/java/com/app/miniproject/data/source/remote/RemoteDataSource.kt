@@ -123,4 +123,22 @@ class RemoteDataSource @Inject constructor(
             emit(UiState.Error(e.message.toString()))
         }
     }
+
+    fun createSupplier(
+        data: SupplierResponse,
+        authorization: String
+    ): Flow<UiState<CreateSupplierResponse>> = flow {
+        emit(UiState.Loading)
+        try {
+            val response = apiService.createSupplier(data, authorization)
+            val responseBody = response.body()
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
+        }
+    }
 }

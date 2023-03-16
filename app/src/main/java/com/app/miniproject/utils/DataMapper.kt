@@ -2,7 +2,6 @@ package com.app.miniproject.utils
 
 import com.app.miniproject.data.source.remote.response.*
 import com.app.miniproject.domain.model.*
-import com.app.miniproject.domain.model.Supplier
 
 fun RegistrationResponse.toRegistration(): Registration {
     val data = RegistrationData(
@@ -71,4 +70,14 @@ fun CreateItemResponse.toCreateItem(): CreateItem {
         message = this.message,
         status = this.status
     )
+}
+
+fun CreateSupplierResponse.toCreateSupplier(): CreateSupplier {
+    val supplier = Supplier(
+        namaSupplier = this.data?.namaSupplier,
+        id = this.data?.id,
+        noTelp = this.data?.noTelp,
+        alamat = this.data?.alamat
+    )
+    return CreateSupplier(data = supplier, message = this.message, status = this.status)
 }

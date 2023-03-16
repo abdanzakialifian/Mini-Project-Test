@@ -5,6 +5,7 @@ import androidx.paging.map
 import com.app.miniproject.data.source.local.LocalDataSource
 import com.app.miniproject.data.source.remote.RemoteDataSource
 import com.app.miniproject.data.source.remote.response.DataItemResponse
+import com.app.miniproject.data.source.remote.response.SupplierResponse
 import com.app.miniproject.domain.interfaces.ShopRepository
 import com.app.miniproject.domain.model.*
 import com.app.miniproject.utils.*
@@ -80,11 +81,26 @@ class ShopRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun createItem(data: DataItemResponse, authorization: String): Flow<UiState<CreateItem>> =
+    override fun createItem(
+        data: DataItemResponse,
+        authorization: String
+    ): Flow<UiState<CreateItem>> =
         remoteDataSource.createItem(data, authorization).map { uiState ->
             when (uiState) {
                 is UiState.Loading -> UiState.Loading
                 is UiState.Success -> UiState.Success(uiState.data.toCreateItem())
+                is UiState.Error -> UiState.Error(uiState.message)
+            }
+        }
+
+    override fun createSupplier(
+        data: SupplierResponse,
+        authorization: String
+    ): Flow<UiState<CreateSupplier>> =
+        remoteDataSource.createSupplier(data, authorization).map { uiState ->
+            when (uiState) {
+                is UiState.Loading -> UiState.Loading
+                is UiState.Success -> UiState.Success(uiState.data.toCreateSupplier())
                 is UiState.Error -> UiState.Error(uiState.message)
             }
         }

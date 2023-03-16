@@ -3,7 +3,9 @@ package com.app.miniproject.presentation.supplier.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import com.app.miniproject.data.source.remote.response.SupplierResponse
 import com.app.miniproject.domain.interfaces.ShopUseCase
+import com.app.miniproject.domain.model.CreateSupplier
 import com.app.miniproject.domain.model.Delete
 import com.app.miniproject.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,11 +15,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SupplierViewModel @Inject constructor(private val shopUseCase: ShopUseCase) : ViewModel() {
+    private val data = MutableStateFlow(SupplierResponse())
     private val authorization = MutableStateFlow("")
     private val id = MutableStateFlow(0)
 
     fun setToken(authorization: String) {
         this.authorization.value = authorization
+    }
+
+    fun setData(data: SupplierResponse) {
+        this.data.value = data
     }
 
     fun setId(id: Int) {
@@ -45,4 +52,16 @@ class SupplierViewModel @Inject constructor(private val shopUseCase: ShopUseCase
             )
         }
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val createSupplier: Flow<UiState<CreateSupplier>> =
+        authorization.flatMapLatest { authorization ->
+            data.flatMapLatest { data ->
+                shopUseCase.createSupplier(data, authorization).stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(),
+                    initialValue = UiState.Loading
+                )
+            }
+        }
 }

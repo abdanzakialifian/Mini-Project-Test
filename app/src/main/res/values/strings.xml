@@ -30,4 +30,6 @@
     <string name="create">Create</string>
     <string name="choose_supplier">Choose Supplier</string>
     <string name="item">Item</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="enter_address">Enter Address</string>
 </resources>

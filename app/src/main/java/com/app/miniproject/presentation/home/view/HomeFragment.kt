@@ -58,6 +58,20 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         setButtonClicked()
     }
 
+    private fun setButtonClicked() {
+        homeAdapter.setOnButtonClickCallback(object : HomeAdapter.OnButtonClickCallback {
+            override fun onDeleteClicked(item: DataItem?) {
+                customAlterDialogInformation(item)
+            }
+
+            override fun onUpdateClicked(item: DataItem?) {}
+        })
+
+        binding.imgCreate.setOnClickListener {
+            customDialogCreate()
+        }
+    }
+
     private fun callApi() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -173,7 +187,7 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
             stok = stock.toInt()
         )
 
-        viewModel.setRequestBody(data)
+        viewModel.setData(data)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -198,20 +212,6 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
                     }
                 }
             }
-        }
-    }
-
-    private fun setButtonClicked() {
-        homeAdapter.setOnButtonClickCallback(object : HomeAdapter.OnButtonClickCallback {
-            override fun onDeleteClicked(item: DataItem?) {
-                customAlterDialogInformation(item)
-            }
-
-            override fun onUpdateClicked(item: DataItem?) {}
-        })
-
-        binding.imgCreate.setOnClickListener {
-            customDialogCreate()
         }
     }
 

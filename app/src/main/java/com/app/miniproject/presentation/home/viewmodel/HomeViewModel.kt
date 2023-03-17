@@ -8,10 +8,14 @@ import com.app.miniproject.domain.interfaces.ShopUseCase
 import com.app.miniproject.domain.model.CreateItem
 import com.app.miniproject.domain.model.DataItem
 import com.app.miniproject.domain.model.Delete
+import com.app.miniproject.domain.model.Supplier
 import com.app.miniproject.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,7 +59,7 @@ class HomeViewModel @Inject constructor(private val shopUseCase: ShopUseCase) : 
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val getSupplierList = authorization.flatMapLatest { authorization ->
+    val getSupplierList: Flow<PagingData<Supplier>> = authorization.flatMapLatest { authorization ->
         shopUseCase.getSupplierList(authorization).stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
@@ -84,6 +88,13 @@ class HomeViewModel @Inject constructor(private val shopUseCase: ShopUseCase) : 
                     initialValue = UiState.Loading
                 )
             }
+        }
+    }
+
+    val getUserName: Flow<String> = shopUseCase.getUserName()
+    fun deleteLocalData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            shopUseCase.deleteLocalData()
         }
     }
 }

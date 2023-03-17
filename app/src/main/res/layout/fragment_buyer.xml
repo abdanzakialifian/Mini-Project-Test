@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".presentation.buyer.view.BuyerFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/white"
+        app:elevation="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/buyer"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/img_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_create"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_animation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+            <include layout="@layout/item_placeholder" />
+
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_buyer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_list_supplier" />
+
+</LinearLayout>

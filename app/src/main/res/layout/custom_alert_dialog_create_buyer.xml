@@ -28,7 +28,7 @@
                 app:boxCornerRadiusTopStart="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_supplier_name"
+                    android:id="@+id/edt_buyer_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
@@ -74,6 +74,26 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
                     android:hint="@string/enter_address" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:hint="@string/enter_gender" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

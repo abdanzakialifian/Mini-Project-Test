@@ -1,6 +1,7 @@
 package com.app.miniproject.domain.usecase
 
 import androidx.paging.PagingData
+import com.app.miniproject.data.source.remote.response.DataBuyerResponse
 import com.app.miniproject.data.source.remote.response.DataItemResponse
 import com.app.miniproject.data.source.remote.response.SupplierResponse
 import com.app.miniproject.domain.interfaces.ShopRepository
@@ -75,4 +76,15 @@ class ShopUseCaseImpl @Inject constructor(private val shopRepository: ShopReposi
     override suspend fun deleteLocalData() {
         shopRepository.deleteLocalData()
     }
+
+    override fun getBuyerList(authorization: String): Flow<PagingData<DataBuyer>> =
+        shopRepository.getBuyerList(authorization)
+
+    override fun deleteBuyer(id: Int, authorization: String): Flow<UiState<Delete>> =
+        shopRepository.deleteBuyer(id, authorization)
+
+    override fun createBuyer(
+        data: DataBuyerResponse,
+        authorization: String
+    ): Flow<UiState<CreateBuyer>> = shopRepository.createBuyer(data, authorization)
 }

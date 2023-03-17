@@ -81,3 +81,22 @@ fun CreateSupplierResponse.toCreateSupplier(): CreateSupplier {
     )
     return CreateSupplier(data = supplier, message = this.message, status = this.status)
 }
+
+fun DataBuyerResponse.toDataBuyer(): DataBuyer = DataBuyer(
+    namaPembeli = this.namaPembeli,
+    jenisKelamin = this.jenisKelamin,
+    id = this.id,
+    noTelp = this.noTelp,
+    alamat = this.alamat
+)
+
+fun CreateBuyerResponse.toCreateBuyer(): CreateBuyer {
+    val data = DataBuyer(
+        namaPembeli = this.data?.namaPembeli,
+        jenisKelamin = this.data?.jenisKelamin,
+        id = this.data?.id,
+        noTelp = this.data?.noTelp,
+        alamat = this.data?.alamat
+    )
+    return CreateBuyer(data = data, message = this.message, status = this.status)
+}

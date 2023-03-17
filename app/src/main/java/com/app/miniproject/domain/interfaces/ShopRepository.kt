@@ -1,6 +1,7 @@
 package com.app.miniproject.domain.interfaces
 
 import androidx.paging.PagingData
+import com.app.miniproject.data.source.remote.response.DataBuyerResponse
 import com.app.miniproject.data.source.remote.response.DataItemResponse
 import com.app.miniproject.data.source.remote.response.SupplierResponse
 import com.app.miniproject.domain.model.*
@@ -28,10 +29,18 @@ interface ShopRepository {
         authorization: String,
         data: DataItemResponse
     ): Flow<UiState<CreateItem>>
+
     fun updateSupplier(
         id: Int,
         authorization: String,
         data: SupplierResponse
     ): Flow<UiState<CreateSupplier>>
+
     suspend fun deleteLocalData()
+    fun getBuyerList(authorization: String): Flow<PagingData<DataBuyer>>
+    fun deleteBuyer(id: Int, authorization: String): Flow<UiState<Delete>>
+    fun createBuyer(
+        data: DataBuyerResponse,
+        authorization: String
+    ): Flow<UiState<CreateBuyer>>
 }

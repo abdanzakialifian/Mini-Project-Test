@@ -11,10 +11,13 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.app.miniproject.R
@@ -23,6 +26,7 @@ import com.app.miniproject.data.source.remote.response.SupplierResponse
 import com.app.miniproject.databinding.FragmentHomeBinding
 import com.app.miniproject.domain.model.DataItem
 import com.app.miniproject.domain.model.Supplier
+import com.app.miniproject.presentation.adapter.LoadingStateAdapter
 import com.app.miniproject.presentation.base.BaseVBFragment
 import com.app.miniproject.presentation.home.adapter.HomeAdapter
 import com.app.miniproject.presentation.home.adapter.SupplierDropDownAdapter
@@ -56,6 +60,23 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
 
         callApi()
         setButtonClicked()
+        setProfile()
+        binding.rvItem.adapter = homeAdapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                homeAdapter.retry()
+            }
+        )
+    }
+
+    private fun setProfile() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getUserName
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { name ->
+                    binding.drawerView.tvName.text = name
+                    setInitialImage(name)
+                }
+        }
     }
 
     private fun setButtonClicked() {
@@ -71,6 +92,37 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
 
         binding.imgCreate.setOnClickListener {
             customDialogCreate(Type.CREATE)
+        }
+
+        binding.imgMenu.setOnClickListener {
+            if (!binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
+
+        binding.drawerView.menuLogout.setOnClickListener {
+            val title = resources.getString(R.string.title_alert_dialog_information)
+            val subTitle = resources.getString(R.string.make_sure_logout)
+            requireContext().showAlertDialogInformation(
+                layoutInflater,
+                title,
+                subTitle
+            ) { alertDialog, _ ->
+                val actionToLoginFragment =
+                    HomeFragmentDirections.actionHomeFragmentToLoginFragment()
+                findNavController().navigate(actionToLoginFragment)
+                viewModel.deleteLocalData()
+                alertDialog.dismiss()
+            }
+        }
+        binding.drawerView.menuPayment.setOnClickListener {
+            view?.showSnackBar(layoutInflater, resources.getString(R.string.coming_soon_payment))
+        }
+        binding.drawerView.menuTransaction.setOnClickListener {
+            view?.showSnackBar(
+                layoutInflater,
+                resources.getString(R.string.coming_soon_transaction)
+            )
         }
     }
 
@@ -270,6 +322,42 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         }
     }
 
+    private fun callApiDeleteItem(
+        idItem: Int,
+        alertDialog: AlertDialog,
+        progressBar: ProgressBar
+    ) {
+        viewModel.setId(idItem)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.getUserToken.collect { token ->
+                        viewModel.setToken("Bearer $token")
+                    }
+                }
+                launch {
+                    viewModel.deleteItem.collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> progressBar.visible()
+                            is UiState.Success -> {
+                                alertDialog.dismiss()
+                                progressBar.gone()
+                                callApi()
+                            }
+                            is UiState.Error -> {
+                                progressBar.gone()
+                                view?.showSnackBar(
+                                    layoutInflater, uiState.message
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun customAlterDialogInformation(item: DataItem?) {
         val title = resources.getString(R.string.title_alert_dialog_information)
         val subTitle =
@@ -277,35 +365,7 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         requireContext().showAlertDialogInformation(
             layoutInflater, title, subTitle
         ) { alertDialog, progressBar ->
-            viewModel.setId(item?.id ?: 0)
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    launch {
-                        viewModel.getUserToken.collect { token ->
-                            viewModel.setToken("Bearer $token")
-                        }
-                    }
-                    launch {
-                        viewModel.deleteItem.collect { uiState ->
-                            when (uiState) {
-                                is UiState.Loading -> progressBar.visible()
-                                is UiState.Success -> {
-                                    alertDialog.dismiss()
-                                    progressBar.gone()
-                                    callApi()
-                                }
-                                is UiState.Error -> {
-                                    progressBar.gone()
-                                    view?.showSnackBar(
-                                        layoutInflater, uiState.message
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            callApiDeleteItem(item?.id ?: 0, alertDialog, progressBar)
         }
     }
 
@@ -400,5 +460,26 @@ class HomeFragment : BaseVBFragment<FragmentHomeBinding>() {
         cardView.gone()
         textInputLayout.endIconDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_down)
+    }
+
+    private fun setInitialImage(name: String) {
+        val splitName = name.split(" ")
+        val firstInitial = splitName.firstOrNull()
+        val lastInitial = splitName.lastOrNull()
+        val firstCharacter = firstInitial?.take(1)
+        val lastCharacter = lastInitial?.take(1)
+        binding.drawerView.tvInitialName.text =
+            StringBuilder().append(firstCharacter).append(lastCharacter)
+        val colors = arrayOf(
+            Color.parseColor("#C0392B"),
+            Color.parseColor("#2980B9"),
+            Color.parseColor("#1ABC9C"),
+            Color.parseColor("#F1C40F"),
+            Color.parseColor("#95A5A6"),
+            Color.parseColor("#34495E")
+        )
+        val randomColor = colors.random()
+
+        binding.drawerView.tvInitialName.background.setTint(randomColor)
     }
 }

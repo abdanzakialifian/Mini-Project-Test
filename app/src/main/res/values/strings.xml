@@ -12,7 +12,6 @@
     <string name="signup_to_get_started">Signup to get started</string>
     <string name="supplier">Supplier</string>
     <string name="home">Home</string>
-    <string name="profile">Profile</string>
     <string name="address">Address</string>
     <string name="phone_number">Phone Number</string>
     <string name="supplier_name">Supplier Name</string>
@@ -34,4 +33,12 @@
     <string name="enter_address">Enter Address</string>
     <string name="logout">Logout</string>
     <string name="make_sure_logout">"Are you sure you want to exit the application?"</string>
+    <string name="payment">Payment</string>
+    <string name="transaction">Transaction</string>
+    <string name="buyer">Buyer</string>
+    <string name="gender">Gender</string>
+    <string name="retry">Retry</string>
+    <string name="coming_soon_payment">Feature payment is coming soon</string>
+    <string name="coming_soon_transaction">Feature transaction is coming soon</string>
+    <string name="enter_gender">Enter Gender</string>
 </resources>

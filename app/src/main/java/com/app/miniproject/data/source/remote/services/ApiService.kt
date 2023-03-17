@@ -67,4 +67,23 @@ interface ApiService {
         @Header("Authorization") authorization: String,
         @Body data: SupplierResponse
     ): Response<CreateSupplierResponse>
+
+    @GET("pembeli/find-all")
+    suspend fun getBuyerList(
+        @Query("offset") offsite: Int,
+        @Query("limit") limit: Int,
+        @Header("Authorization") authorization: String
+    ): BuyerResponse
+
+    @DELETE("pembeli/delete/{id}")
+    suspend fun deleteBuyer(
+        @Path("id") id: Int,
+        @Header("Authorization") authorization: String
+    ): Response<DeleteResponse>
+
+    @POST("pembeli/create")
+    suspend fun createBuyer(
+        @Body data: DataBuyerResponse,
+        @Header("Authorization") authorization: String
+    ): Response<CreateBuyerResponse>
 }

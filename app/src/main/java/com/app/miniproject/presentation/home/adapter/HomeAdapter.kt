@@ -65,6 +65,8 @@ class HomeAdapter @Inject constructor() :
         holder.bind(getItem(position))
     }
 
+    override fun getItemViewType(position: Int): Int = position
+
     interface OnButtonClickCallback {
         fun onDeleteClicked(item: DataItem?)
         fun onUpdateClicked(item: DataItem?)

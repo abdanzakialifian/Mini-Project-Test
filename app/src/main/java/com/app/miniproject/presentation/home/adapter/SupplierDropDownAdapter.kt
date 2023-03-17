@@ -41,6 +41,8 @@ class SupplierDropDownAdapter @Inject constructor() :
         holder.bind(getItem(position))
     }
 
+    override fun getItemViewType(position: Int): Int = position
+
     interface OnItemClickCallback {
         fun onItemClicked(item: Supplier?)
     }

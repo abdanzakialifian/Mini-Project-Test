@@ -1,4 +1,4 @@
-package com.app.miniproject.presentation.supplier.view
+package com.app.miniproject.presentation.buyer.view
 
 import android.app.AlertDialog
 import android.graphics.Color
@@ -14,53 +14,52 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import com.app.miniproject.R
-import com.app.miniproject.data.source.remote.response.SupplierResponse
-import com.app.miniproject.databinding.FragmentSupplierBinding
-import com.app.miniproject.domain.model.Supplier
+import com.app.miniproject.data.source.remote.response.DataBuyerResponse
+import com.app.miniproject.databinding.FragmentBuyerBinding
+import com.app.miniproject.domain.model.DataBuyer
 import com.app.miniproject.presentation.adapter.LoadingStateAdapter
 import com.app.miniproject.presentation.base.BaseVBFragment
-import com.app.miniproject.presentation.supplier.adapter.SupplierAdapter
-import com.app.miniproject.presentation.supplier.viewmodel.SupplierViewModel
+import com.app.miniproject.presentation.buyer.adapter.BuyerAdapter
+import com.app.miniproject.presentation.buyer.viewmodel.BuyerViewModel
 import com.app.miniproject.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
+class BuyerFragment : BaseVBFragment<FragmentBuyerBinding>() {
 
     @Inject
-    lateinit var supplierAdapter: SupplierAdapter
+    lateinit var buyerAdapter: BuyerAdapter
 
-    private val viewModel by viewModels<SupplierViewModel>()
+    private val viewModel by viewModels<BuyerViewModel>()
 
-    override fun getViewBinding(): FragmentSupplierBinding =
-        FragmentSupplierBinding.inflate(layoutInflater)
+    override fun getViewBinding(): FragmentBuyerBinding =
+        FragmentBuyerBinding.inflate(layoutInflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         callApi()
         setButtonClicked()
-        binding.rvSupplier.adapter = supplierAdapter.withLoadStateFooter(
+        binding.rvBuyer.adapter = buyerAdapter.withLoadStateFooter(
             footer = LoadingStateAdapter {
-                supplierAdapter.retry()
+                buyerAdapter.retry()
             }
         )
     }
 
     private fun setButtonClicked() {
-        supplierAdapter.setOnButtonClickCallback(object : SupplierAdapter.OnButtonClickCallback {
-            override fun onDeleteClicked(item: Supplier?) {
-                customAlterDialog(item)
+        buyerAdapter.setOnButtonClickCallback(object : BuyerAdapter.OnButtonClickCallback {
+            override fun onDeleteClicked(item: DataBuyer?) {
+                customAlterDialogInformation(item)
             }
 
-            override fun onUpdateClicked(item: Supplier?) {
-                customDialogCreate(Type.UPDATE, item)
-            }
+            override fun onUpdateClicked(item: DataBuyer?) {}
         })
+
         binding.imgCreate.setOnClickListener {
-            customDialogCreate(Type.CREATE)
+            customDialogCreate()
         }
     }
 
@@ -73,31 +72,30 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
                     }
                 }
                 launch {
-                    viewModel.getSupplierList.collect { pagingData ->
-                        supplierAdapter.submitData(pagingData)
-                        binding.rvSupplier.adapter = supplierAdapter
-
-                        supplierAdapter.addLoadStateListener { loadState ->
+                    viewModel.getBuyerList.collect { pagingData ->
+                        buyerAdapter.submitData(pagingData)
+                        binding.rvBuyer.adapter = buyerAdapter
+                        buyerAdapter.addLoadStateListener { loadState ->
                             when (val state = loadState.refresh) {
                                 is LoadState.Loading -> {
                                     binding.apply {
                                         shimmerAnimation.visible()
                                         shimmerAnimation.startShimmer()
-                                        rvSupplier.gone()
+                                        rvBuyer.gone()
                                     }
                                 }
                                 is LoadState.NotLoading -> {
                                     binding.apply {
                                         shimmerAnimation.gone()
                                         shimmerAnimation.stopShimmer()
-                                        rvSupplier.visible()
+                                        rvBuyer.visible()
                                     }
                                 }
                                 is LoadState.Error -> {
                                     binding.apply {
                                         shimmerAnimation.gone()
                                         shimmerAnimation.stopShimmer()
-                                        rvSupplier.gone()
+                                        rvBuyer.gone()
                                     }
                                     view?.showSnackBar(
                                         layoutInflater, state.error.message.toString()
@@ -111,15 +109,53 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
         }
     }
 
-    private fun callApiCreateSupplier(
-        supplierName: String,
-        phoneNumber: String,
-        address: String,
+    private fun callApiDeleteBuyer(
+        idItem: Int,
         alertDialog: AlertDialog,
         progressBar: ProgressBar
     ) {
-        val data = SupplierResponse(
-            namaSupplier = supplierName,
+        viewModel.setId(idItem)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.getUserToken.collect { token ->
+                        viewModel.setToken("Bearer $token")
+                    }
+                }
+                launch {
+                    viewModel.deleteBuyer.collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> progressBar.visible()
+                            is UiState.Success -> {
+                                alertDialog.dismiss()
+                                progressBar.gone()
+                                callApi()
+                            }
+                            is UiState.Error -> {
+                                progressBar.gone()
+                                view?.showSnackBar(
+                                    layoutInflater, uiState.message
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun callApiCreateBuyer(
+        buyerName: String,
+        phoneNumber: String,
+        address: String,
+        gender: String,
+        alertDialog: AlertDialog,
+        progressBar: ProgressBar
+    ) {
+        val data = DataBuyerResponse(
+            namaPembeli = buyerName,
+            jenisKelamin = gender,
             id = 0,
             noTelp = phoneNumber,
             alamat = address
@@ -135,7 +171,7 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
                     }
                 }
                 launch {
-                    viewModel.createSupplier.collect { uiState ->
+                    viewModel.createBuyer.collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> progressBar.visible()
                             is UiState.Success -> {
@@ -153,143 +189,39 @@ class SupplierFragment : BaseVBFragment<FragmentSupplierBinding>() {
         }
     }
 
-    private fun callApiUpdateSupplier(
-        idSupplier: Int,
-        supplierName: String,
-        phoneNumber: String,
-        address: String,
-        alertDialog: AlertDialog,
-        progressBar: ProgressBar
-    ) {
-        val data = SupplierResponse(
-            namaSupplier = supplierName,
-            id = idSupplier,
-            noTelp = phoneNumber,
-            alamat = address
-        )
-
-        viewModel.setData(data)
-
-        viewModel.setId(idSupplier)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.getUserToken.collect { token ->
-                        viewModel.setToken("Bearer $token")
-                    }
-                }
-                launch {
-                    viewModel.updateItem.collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> progressBar.visible()
-                            is UiState.Success -> {
-                                alertDialog.dismiss()
-                                callApi()
-                            }
-                            is UiState.Error -> {
-                                progressBar.gone()
-                                view?.showSnackBar(layoutInflater, uiState.message)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun callApiDeleteSupplier(
-        idSupplier: Int,
-        alertDialog: AlertDialog,
-        progressBar: ProgressBar
-    ) {
-        viewModel.setId(idSupplier)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.getUserToken.collect { token ->
-                        viewModel.setToken("Bearer $token")
-                    }
-                }
-                launch {
-                    viewModel.deleteSupplier.collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> progressBar.visible()
-                            is UiState.Success -> {
-                                alertDialog.dismiss()
-                                progressBar.gone()
-                                callApi()
-                            }
-                            is UiState.Error -> {
-                                progressBar.gone()
-                                view?.showSnackBar(
-                                    layoutInflater,
-                                    uiState.message
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun customAlterDialog(item: Supplier?) {
+    private fun customAlterDialogInformation(item: DataBuyer?) {
         val title = resources.getString(R.string.title_alert_dialog_information)
         val subTitle =
-            resources.getString(R.string.sub_title_alert_dialog_information, item?.namaSupplier)
+            resources.getString(R.string.sub_title_alert_dialog_information, item?.namaPembeli)
         requireContext().showAlertDialogInformation(
-            layoutInflater,
-            title,
-            subTitle
+            layoutInflater, title, subTitle
         ) { alertDialog, progressBar ->
-            callApiDeleteSupplier(item?.id ?: 0, alertDialog, progressBar)
+            callApiDeleteBuyer(item?.id ?: 0, alertDialog, progressBar)
         }
     }
 
-    private fun customDialogCreate(type: Type, item: Supplier? = Supplier()) {
+    private fun customDialogCreate() {
         val builder = AlertDialog.Builder(requireContext())
-        val customLayout =
-            layoutInflater.inflate(R.layout.custom_alert_dialog_create_supplier, null)
+        val customLayout = layoutInflater.inflate(R.layout.custom_alert_dialog_create_buyer, null)
         builder.setView(customLayout)
-        val edtSupplierName = customLayout.findViewById<TextView>(R.id.edt_supplier_name)
+        val edtBuyerName = customLayout.findViewById<TextView>(R.id.edt_buyer_name)
         val edtPhoneNumber = customLayout.findViewById<TextView>(R.id.edt_phone_number)
         val edtAddress = customLayout.findViewById<TextView>(R.id.edt_address)
+        val edtGender = customLayout.findViewById<TextView>(R.id.edt_gender)
         val progressBar = customLayout.findViewById<ProgressBar>(R.id.progress_bar)
         val btnCreate = customLayout.findViewById<AppCompatButton>(R.id.btn_create)
         val btnCancel = customLayout.findViewById<AppCompatButton>(R.id.btn_cancel)
         val dialog = builder.create()
 
-        when (type) {
-            Type.CREATE -> {
-                btnCreate.text = resources.getString(R.string.create)
-                btnCreate.setOnClickListener {
-                    callApiCreateSupplier(
-                        edtSupplierName.text.toString(),
-                        edtPhoneNumber.text.toString(),
-                        edtAddress.text.toString(),
-                        dialog,
-                        progressBar
-                    )
-                }
-            }
-            Type.UPDATE -> {
-                edtSupplierName.text = item?.namaSupplier
-                edtPhoneNumber.text = item?.noTelp
-                edtAddress.text = item?.alamat
-                btnCreate.text = resources.getString(R.string.update)
-                btnCreate.setOnClickListener {
-                    callApiUpdateSupplier(
-                        item?.id ?: 0,
-                        edtSupplierName.text.toString(),
-                        edtPhoneNumber.text.toString(),
-                        edtAddress.text.toString(),
-                        dialog,
-                        progressBar
-                    )
-                }
-            }
+        btnCreate.setOnClickListener {
+            callApiCreateBuyer(
+                edtBuyerName.text.toString(),
+                edtPhoneNumber.text.toString(),
+                edtAddress.text.toString(),
+                edtGender.text.toString(),
+                dialog,
+                progressBar
+            )
         }
 
         btnCancel.setOnClickListener {

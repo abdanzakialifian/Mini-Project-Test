@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.app.miniproject.data.source.local.LocalDataSource
 import com.app.miniproject.data.source.remote.RemoteDataSource
+import com.app.miniproject.data.source.remote.response.DataBuyerResponse
 import com.app.miniproject.data.source.remote.response.DataItemResponse
 import com.app.miniproject.data.source.remote.response.SupplierResponse
 import com.app.miniproject.domain.interfaces.ShopRepository
@@ -139,4 +140,32 @@ class ShopRepositoryImpl @Inject constructor(
     override suspend fun deleteLocalData() {
         localDataSource.deleteLocalData()
     }
+
+    override fun getBuyerList(authorization: String): Flow<PagingData<DataBuyer>> =
+        remoteDataSource.getBuyerList(authorization).map { pagingData ->
+            pagingData.map { map ->
+                map.toDataBuyer()
+            }
+        }
+
+    override fun deleteBuyer(id: Int, authorization: String): Flow<UiState<Delete>> =
+        remoteDataSource.deleteBuyer(id, authorization).map { uiState ->
+            when (uiState) {
+                is UiState.Loading -> UiState.Loading
+                is UiState.Success -> UiState.Success(uiState.data.toDelete())
+                is UiState.Error -> UiState.Error(uiState.message)
+            }
+        }
+
+    override fun createBuyer(
+        data: DataBuyerResponse,
+        authorization: String
+    ): Flow<UiState<CreateBuyer>> =
+        remoteDataSource.createBuyer(data, authorization).map { uiState ->
+            when (uiState) {
+                is UiState.Loading -> UiState.Loading
+                is UiState.Success -> UiState.Success(uiState.data.toCreateBuyer())
+                is UiState.Error -> UiState.Error(uiState.message)
+            }
+        }
 }

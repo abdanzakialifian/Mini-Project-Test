@@ -3,6 +3,7 @@ package com.app.miniproject.data.source.remote
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.app.miniproject.data.source.remote.paging.BuyerPagingSource
 import com.app.miniproject.data.source.remote.paging.ItemPagingSource
 import com.app.miniproject.data.source.remote.paging.SupplierPagingSource
 import com.app.miniproject.data.source.remote.response.*
@@ -18,7 +19,8 @@ import javax.inject.Singleton
 class RemoteDataSource @Inject constructor(
     private val apiService: ApiService,
     private val itemPagingSource: ItemPagingSource,
-    private val supplierPagingSource: SupplierPagingSource
+    private val supplierPagingSource: SupplierPagingSource,
+    private val buyerPagingSource: BuyerPagingSource
 ) {
     fun postRegistration(requestBody: RequestBody): Flow<UiState<RegistrationResponse>> = flow {
         emit(UiState.Loading)
@@ -169,6 +171,49 @@ class RemoteDataSource @Inject constructor(
         emit(UiState.Loading)
         try {
             val response = apiService.updateSupplier(id, authorization, data)
+            val responseBody = response.body()
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
+        }
+    }
+
+    fun getBuyerList(authorization: String): Flow<PagingData<DataBuyerResponse>> =
+        Pager(config = PagingConfig(
+            pageSize = 10, initialLoadSize = 10
+        ), pagingSourceFactory = {
+            buyerPagingSource.apply {
+                setToken(authorization)
+            }
+        }).flow
+
+    fun deleteBuyer(id: Int, authorization: String): Flow<UiState<DeleteResponse>> = flow {
+        emit(UiState.Loading)
+        try {
+            val response = apiService.deleteBuyer(id, authorization)
+            val responseBody = response.body()
+
+            if (response.isSuccessful && responseBody != null) {
+                emit(UiState.Success(responseBody))
+            } else {
+                emit(UiState.Error(responseBody?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(UiState.Error(e.message.toString()))
+        }
+    }
+
+    fun createBuyer(
+        data: DataBuyerResponse,
+        authorization: String
+    ): Flow<UiState<CreateBuyerResponse>> = flow {
+        emit(UiState.Loading)
+        try {
+            val response = apiService.createBuyer(data, authorization)
             val responseBody = response.body()
             if (response.isSuccessful && responseBody != null) {
                 emit(UiState.Success(responseBody))

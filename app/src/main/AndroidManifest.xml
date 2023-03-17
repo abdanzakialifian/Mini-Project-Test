@@ -16,7 +16,7 @@
         android:theme="@style/Theme.MiniProject"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.base.BaseNavigationActivity"
+            android:name=".presentation.container.ContainerActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

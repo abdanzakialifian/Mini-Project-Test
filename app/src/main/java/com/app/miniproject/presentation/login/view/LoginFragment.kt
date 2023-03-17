@@ -105,9 +105,9 @@ class LoginFragment : BaseVBFragment<FragmentLoginBinding>() {
                             viewModel.saveUserSession(true)
                             viewModel.saveUserToken(uiState.data.data?.token ?: "")
                             viewModel.saveUserName(uiState.data.data?.profileName ?: "")
-                            val actionToContainerFragment =
-                                LoginFragmentDirections.actionLoginFragmentToContainerFragment()
-                            findNavController().navigate(actionToContainerFragment)
+                            val actionToHomeFragment =
+                                LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+                            findNavController().navigate(actionToHomeFragment)
                         }
                         is UiState.Error -> {
                             binding.progressBar.gone()

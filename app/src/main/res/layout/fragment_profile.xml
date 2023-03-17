@@ -9,6 +9,17 @@
     tools:context=".presentation.profile.view.ProfileFragment">
 
     <TextView
+        android:id="@+id/tv_initial_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/background_image_rounded"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        tools:text="AZ" />
+
+    <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +27,7 @@
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18sp"
+        android:layout_marginTop="20dp"
         tools:text="Abdan Zaki Alifian" />
 
     <androidx.appcompat.widget.AppCompatButton

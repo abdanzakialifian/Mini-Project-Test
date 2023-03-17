@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -40,7 +39,7 @@ class SplashScreenFragment : BaseVBFragment<FragmentSplashScreenBinding>() {
                     .collect { isLogin ->
                         if (isLogin) {
                             val actionToContainerFragment =
-                                SplashScreenFragmentDirections.actionSplashScreenFragmentToContainerFragment()
+                                SplashScreenFragmentDirections.actionSplashScreenFragmentToHomeFragment()
                             findNavController().navigate(actionToContainerFragment)
                         } else {
                             val actionToLoginFragment =
